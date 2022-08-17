@@ -47,9 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: Row(
         children: [
           NavigationRail(
@@ -58,27 +55,26 @@ class _MyHomePageState extends State<MyHomePage> {
             extended: true,
             destinations: const [
               NavigationRailDestination(
-                icon: Icon(Icons.home),
-                label: Text('Home'),
-                padding: EdgeInsets.only(left: 0),
+                icon: Icon(Icons.list),
+                label: Text('All'),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.location_city),
                 label: Text('City'),
-                padding: EdgeInsets.only(left: 150),
               ),
             ],
           ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text('You have pushed the button this many times:'),
-                Text(
-                  '$_counter',
-                  style: Theme.of(context).textTheme.headline4,
+          Expanded(
+            child: Center(
+              child: GridView.count(
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
+                crossAxisCount: 6,
+                children: List.generate(
+                  100,
+                  (index) => Center(child: Text('Item $index')),
                 ),
-              ],
+              ),
             ),
           ),
         ],
