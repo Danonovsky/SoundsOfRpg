@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sounds_of_rpg/widgets/sound_tile.dart';
+import 'package:uuid/uuid.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -26,8 +28,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final String _useLightModePrefsName = 'useLightMode';
   int _selectedIndex = 0;
   bool _useLightMode = true;
+  late SharedPreferences prefs;
+
+  _MyHomePageState() {
+    SharedPreferences.getInstance().then((value) {
+      prefs = value;
+      var lightModeFromPrefs = prefs.getBool(_useLightModePrefsName);
+      if (lightModeFromPrefs == null) return;
+      setState(() {
+        _useLightMode = lightModeFromPrefs;
+      });
+    });
+  }
 
   Brightness get brightness =>
       _useLightMode ? Brightness.light : Brightness.dark;
@@ -39,15 +54,19 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void updateLightMode() {
+  void updateLightMode() async {
     setState(() {
       _useLightMode = !_useLightMode;
     });
+    var result = await prefs.setBool(_useLightModePrefsName, _useLightMode);
   }
 
   @override
   Widget build(BuildContext context) {
+    var iconNumber = Icons.abc.codePoint;
+    var iconFontFamily = Icons.abc.fontFamily;
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       themeMode: themeMode,
       theme: ThemeData(
@@ -61,6 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
           elevation: 0.5,
           actions: [
             IconButton(
+              padding: const EdgeInsets.only(right: 15),
               onPressed: updateLightMode,
               icon: Icon(_useLightMode ? Icons.dark_mode : Icons.light_mode),
             ),
@@ -72,16 +92,20 @@ class _MyHomePageState extends State<MyHomePage> {
               selectedIndex: _selectedIndex,
               onDestinationSelected: changeDestination,
               extended: true,
-              destinations: const [
-                NavigationRailDestination(
+              destinations: [
+                const NavigationRailDestination(
                   icon: Icon(Icons.list),
                   label: Text('All'),
                 ),
                 NavigationRailDestination(
-                  icon: Icon(Icons.location_city),
-                  label: Text('City'),
+                  icon: Icon(IconData(iconNumber, fontFamily: iconFontFamily)),
+                  label: const Text('xD'),
                 ),
               ],
+              trailing: IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () {},
+              ),
             ),
             Expanded(
               child: Center(
