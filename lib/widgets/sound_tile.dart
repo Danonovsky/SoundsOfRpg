@@ -18,7 +18,7 @@ class SoundTile extends StatelessWidget {
                 preferBelow: false,
                 child: const Icon(
                   Icons.music_note,
-                  size: 50,
+                  size: 75,
                 ),
               ),
             ),
