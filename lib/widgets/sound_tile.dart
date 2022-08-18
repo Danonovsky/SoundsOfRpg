@@ -10,11 +10,9 @@ class SoundTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8),
+            Center(
               child: Tooltip(
                 message: title,
                 preferBelow: false,
@@ -24,21 +22,27 @@ class SoundTile extends StatelessWidget {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Tooltip(
-                  message: 'Play single',
-                  child: IconButton(
-                    onPressed: playSingle,
-                    icon: const Icon(Icons.play_arrow),
-                  ),
+            Positioned(
+              bottom: 15,
+              left: 15,
+              child: Tooltip(
+                message: 'Play single',
+                child: IconButton(
+                  onPressed: playSingle,
+                  icon: const Icon(Icons.play_arrow),
                 ),
-                IconButton(
-                  onPressed: playLoop,
+              ),
+            ),
+            Positioned(
+              bottom: 15,
+              right: 15,
+              child: Tooltip(
+                message: 'Play in loop',
+                child: IconButton(
+                  onPressed: playSingle,
                   icon: const Icon(Icons.repeat),
                 ),
-              ],
+              ),
             ),
           ],
         ),
