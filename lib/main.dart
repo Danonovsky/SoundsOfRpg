@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
 import 'package:sounds_of_rpg/widgets/sidebar.dart';
 import 'package:sounds_of_rpg/widgets/sound_tile.dart';
-import 'package:uuid/uuid.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -102,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: GridView.count(
                         crossAxisCount: 5,
                         children: List.generate(
-                            10, (index) => SoundTile(title: '$index')),
+                            100, (index) => SoundTile(title: '$index')),
                       ),
                     ),
                     Text('$_selectedIndex'),

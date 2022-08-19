@@ -25,7 +25,7 @@ class _SidebarState extends State<Sidebar> {
   void showAddDialog(BuildContext context) async {
     var category = await showDialog<Category>(
       context: context,
-      builder: (context) => AddCategoryDialog(),
+      builder: (context) => const AddCategoryDialog(),
     );
     if (category == null) return;
     setState(() {
