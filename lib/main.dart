@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sounds_of_rpg/entities/category.dart';
+import 'package:sounds_of_rpg/widgets/sidebar.dart';
 import 'package:sounds_of_rpg/widgets/sound_tile.dart';
 import 'package:uuid/uuid.dart';
 import 'package:window_manager/window_manager.dart';
@@ -29,6 +31,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final String _useLightModePrefsName = 'useLightMode';
+  List<Category> _categories = [];
   int _selectedIndex = 0;
   bool _useLightMode = true;
   late SharedPreferences prefs;
@@ -48,12 +51,6 @@ class _MyHomePageState extends State<MyHomePage> {
       _useLightMode ? Brightness.light : Brightness.dark;
   ThemeMode get themeMode => _useLightMode ? ThemeMode.light : ThemeMode.dark;
 
-  void changeDestination(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   void updateLightMode() async {
     setState(() {
       _useLightMode = !_useLightMode;
@@ -61,10 +58,14 @@ class _MyHomePageState extends State<MyHomePage> {
     var result = await prefs.setBool(_useLightModePrefsName, _useLightMode);
   }
 
+  void changeDestination(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var iconNumber = Icons.abc.codePoint;
-    var iconFontFamily = Icons.abc.fontFamily;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -88,24 +89,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Row(
           children: [
-            NavigationRail(
+            Sidebar(
               selectedIndex: _selectedIndex,
-              onDestinationSelected: changeDestination,
-              extended: true,
-              destinations: [
-                const NavigationRailDestination(
-                  icon: Icon(Icons.list),
-                  label: Text('All'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(IconData(iconNumber, fontFamily: iconFontFamily)),
-                  label: const Text('xD'),
-                ),
-              ],
-              trailing: IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () {},
-              ),
+              categories: _categories,
+              changeDestination: changeDestination,
             ),
             Expanded(
               child: Center(
@@ -118,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             10, (index) => SoundTile(title: '$index')),
                       ),
                     ),
+                    Text('$_selectedIndex'),
                   ],
                 ),
               ),
