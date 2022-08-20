@@ -13,6 +13,8 @@ class AddCategoryDialog extends StatefulWidget {
 class _AddCategoryDialogState extends State<AddCategoryDialog> {
   Category? category;
   String? _name;
+  String _iconSearch = '';
+  IconData? _selectedIcon;
   static var icons = allIcons;
 
   static String _display(MapEntry<String, IconData> icon) => icon.key;
@@ -32,17 +34,33 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
               ),
             ),
             TextField(
-              onChanged: (value) {},
+              onChanged: (value) {
+                setState(() {
+                  _iconSearch = value;
+                });
+              },
               decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
-                labelText: 'Icon',
+                labelText: 'Search',
               ),
             ),
-            SingleChildScrollView(
+            Icon(_selectedIcon),
+            Container(
+              height: 300,
+              width: 300,
               child: GridView.count(
-                shrinkWrap: true,
                 crossAxisCount: 5,
-                children: List.generate(100, (index) => Icon(Icons.abc)),
+                children: allIcons.entries
+                    .where((element) => element.key.contains(_iconSearch))
+                    .map((e) => IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedIcon = e.value;
+                            });
+                          },
+                          icon: Icon(e.value),
+                        ))
+                    .toList(),
               ),
             ),
           ],
@@ -55,10 +73,12 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
           TextButton(
             onPressed: () {
               if (_name == null || _name!.isEmpty) return;
+              IconData icon = _selectedIcon ?? Icons.abc;
               category = Category(
                 id: const Uuid().v4(),
                 name: _name!,
-                icon: Icons.abc,
+                iconCode: icon.codePoint,
+                iconFontFamily: icon.fontFamily!,
               );
               Navigator.pop(context, category);
             },

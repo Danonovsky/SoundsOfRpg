@@ -44,8 +44,14 @@ class _SidebarState extends State<Sidebar> {
             icon: Icon(Icons.list), label: Text('All')),
         const NavigationRailDestination(
             icon: Icon(Icons.abc), label: Text('xD')),
-        ...categories.map((e) =>
-            NavigationRailDestination(icon: Icon(e.icon), label: Text(e.name))),
+        ...categories.map((e) => NavigationRailDestination(
+            icon: Icon(
+              IconData(
+                e.iconCode,
+                fontFamily: e.iconFontFamily,
+              ),
+            ),
+            label: Text(e.name))),
       ],
       trailing: IconButton(
           icon: const Icon(Icons.add),
