@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
 import 'package:sounds_of_rpg/widgets/sidebar.dart';
@@ -44,6 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _useLightMode = lightModeFromPrefs;
       });
     });
+    loadJsonData();
   }
 
   Brightness get brightness =>
@@ -61,6 +66,16 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  Future<String> loadJsonData() async {
+    var jsonText = await rootBundle.loadString('assets/categories.json');
+    setState(() {
+      _categories = json.decode(jsonText);
+      print(_categories);
+      print(jsonText);
+    });
+    return 'success';
   }
 
   @override
