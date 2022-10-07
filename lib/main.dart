@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
+import 'package:sounds_of_rpg/widgets/icon_button_right_padding.dart';
 import 'package:sounds_of_rpg/widgets/sidebar.dart';
 import 'package:sounds_of_rpg/widgets/sound_tile.dart';
 import 'package:window_manager/window_manager.dart';
@@ -54,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _useLightMode ? Brightness.light : Brightness.dark;
   ThemeMode get themeMode => _useLightMode ? ThemeMode.light : ThemeMode.dark;
 
-  void updateLightMode() async {
+  updateLightMode() async {
     setState(() {
       _useLightMode = !_useLightMode;
     });
@@ -67,36 +68,26 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  loadCategories() async {
-    var directory = Directory('storage');
-    if (await directory.exists() == false) {
-      directory = await Directory('storage').create();
-    }
+  Future<File> _getJsonFileForCategories() async {
     var jsonFile = File('storage/categories.json');
     if (await jsonFile.exists() == false) {
-      jsonFile = await File('storage/categories.json').create();
+      jsonFile = await File('storage/categories.json').create(recursive: true);
       await jsonFile.writeAsString('[]');
     }
-    var jsonString = await jsonFile.readAsString();
+    return jsonFile;
+  }
+
+  loadCategories() async {
+    var jsonString = await (await _getJsonFileForCategories()).readAsString();
     var categories = jsonDecode(jsonString) as List<dynamic>;
     for (var entity in categories) {
       var category = Category.fromJson(entity);
-      setState(() {
-        _categories.add(category);
-      });
+      setState(() => _categories.add(category));
     }
   }
 
   saveCategories() async {
-    var directory = Directory('storage');
-    if (await directory.exists() == false) {
-      directory = await Directory('storage').create();
-    }
-    var jsonFile = File('storage/categories.json');
-    if (await jsonFile.exists() == false) {
-      jsonFile = await File('storage/categories.json').create();
-      await jsonFile.writeAsString('[]');
-    }
+    var jsonFile = await _getJsonFileForCategories();
     var jsonString = jsonEncode(_categories);
     await jsonFile.writeAsString(jsonString);
   }
@@ -144,6 +135,15 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Center(
                 child: Column(
                   children: [
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.add),
+                        ),
+                      ),
+                    ),
                     Expanded(
                       child: GridView.count(
                         crossAxisCount: 5,
