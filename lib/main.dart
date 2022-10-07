@@ -118,15 +118,19 @@ class _MyHomePageState extends State<MyHomePage> {
           title: const Text('Sounds of RPG'),
           elevation: 0.5,
           actions: [
-            IconButton(
+            Padding(
               padding: const EdgeInsets.only(right: 15),
-              onPressed: saveCategories,
-              icon: const Icon(Icons.save),
+              child: IconButton(
+                onPressed: saveCategories,
+                icon: const Icon(Icons.save),
+              ),
             ),
-            IconButton(
+            Padding(
               padding: const EdgeInsets.only(right: 15),
-              onPressed: updateLightMode,
-              icon: Icon(_useLightMode ? Icons.dark_mode : Icons.light_mode),
+              child: IconButton(
+                onPressed: updateLightMode,
+                icon: Icon(_useLightMode ? Icons.dark_mode : Icons.light_mode),
+              ),
             ),
           ],
         ),
