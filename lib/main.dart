@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
 import 'package:sounds_of_rpg/widgets/sidebar.dart';
@@ -34,7 +33,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final String _useLightModePrefsName = 'useLightMode';
-  List<Category> _categories = [];
+  final List<Category> _categories = [];
   int _selectedIndex = 0;
   bool _useLightMode = true;
   late SharedPreferences prefs;
