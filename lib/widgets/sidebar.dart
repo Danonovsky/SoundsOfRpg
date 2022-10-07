@@ -18,8 +18,6 @@ class Sidebar extends StatefulWidget {
 }
 
 class _SidebarState extends State<Sidebar> {
-  List<Category> categories = [];
-
   void refreshCategories() {}
 
   void showAddDialog(BuildContext context) async {
@@ -29,7 +27,7 @@ class _SidebarState extends State<Sidebar> {
     );
     if (category == null) return;
     setState(() {
-      categories.add(category);
+      widget.categories.add(category);
     });
   }
 
@@ -44,7 +42,7 @@ class _SidebarState extends State<Sidebar> {
             icon: Icon(Icons.list), label: Text('All')),
         const NavigationRailDestination(
             icon: Icon(Icons.abc), label: Text('xD')),
-        ...categories.map((e) => NavigationRailDestination(
+        ...widget.categories.map((e) => NavigationRailDestination(
             icon: Icon(
               IconData(
                 e.iconCode,

@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _useLightMode = lightModeFromPrefs;
       });
     });
-    loadJsonData();
+    loadCategories();
   }
 
   Brightness get brightness =>
@@ -68,14 +68,38 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<String> loadJsonData() async {
-    var jsonText = await rootBundle.loadString('assets/categories.json');
-    setState(() {
-      _categories = json.decode(jsonText);
-      print(_categories);
-      print(jsonText);
-    });
-    return 'success';
+  loadCategories() async {
+    var directory = Directory('storage');
+    if (await directory.exists() == false) {
+      directory = await Directory('storage').create();
+    }
+    var jsonFile = File('storage/categories.json');
+    if (await jsonFile.exists() == false) {
+      jsonFile = await File('storage/categories.json').create();
+      await jsonFile.writeAsString('[]');
+    }
+    var jsonString = await jsonFile.readAsString();
+    var categories = jsonDecode(jsonString) as List<dynamic>;
+    for (var entity in categories) {
+      var category = Category.fromJson(entity);
+      setState(() {
+        _categories.add(category);
+      });
+    }
+  }
+
+  saveCategories() async {
+    var directory = Directory('storage');
+    if (await directory.exists() == false) {
+      directory = await Directory('storage').create();
+    }
+    var jsonFile = File('storage/categories.json');
+    if (await jsonFile.exists() == false) {
+      jsonFile = await File('storage/categories.json').create();
+      await jsonFile.writeAsString('[]');
+    }
+    var jsonString = jsonEncode(_categories);
+    await jsonFile.writeAsString(jsonString);
   }
 
   @override
@@ -94,6 +118,11 @@ class _MyHomePageState extends State<MyHomePage> {
           title: const Text('Sounds of RPG'),
           elevation: 0.5,
           actions: [
+            IconButton(
+              padding: const EdgeInsets.only(right: 15),
+              onPressed: saveCategories,
+              icon: const Icon(Icons.save),
+            ),
             IconButton(
               padding: const EdgeInsets.only(right: 15),
               onPressed: updateLightMode,

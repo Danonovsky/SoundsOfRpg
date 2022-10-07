@@ -11,13 +11,13 @@ class Category {
     required this.iconFontFamily,
   });
 
-  Category.fromJson(Map<String, dynamic> json)
+  Category.fromJson(Map json)
       : id = json['id'],
         name = json['name'],
         iconCode = json['iconCode'],
         iconFontFamily = json['iconFontFamily'];
 
-  Map<String, dynamic> toJson() => {
+  Map toJson() => {
         'id': id,
         'name': name,
         'iconCode': iconCode,
