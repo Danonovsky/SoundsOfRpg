@@ -21,6 +21,6 @@ class Category {
         'id': id,
         'name': name,
         'iconCode': iconCode,
-        'iconFontFamily': iconFontFamily
+        'iconFontFamily': iconFontFamily,
       };
 }

@@ -1,18 +1,29 @@
-import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
-
 class Sound {
-  final Uuid id;
-  final Uuid categoryId;
+  final String id;
+  final String categoryId;
   final String name;
-  final String path;
-  final Icon icon;
+  final int iconCode;
+  final String iconFontFamily;
 
-  const Sound({
-    required this.id,
-    required this.categoryId,
-    required this.name,
-    required this.path,
-    required this.icon,
-  });
+  const Sound(
+      {required this.id,
+      required this.categoryId,
+      required this.name,
+      required this.iconCode,
+      required this.iconFontFamily});
+
+  Sound.fromJson(Map json)
+      : id = json['id'],
+        categoryId = json['categoryId'],
+        name = json['name'],
+        iconCode = json['iconCode'],
+        iconFontFamily = json['iconFontFamily'];
+
+  Map toJson() => {
+        'id': id,
+        'categoryId': categoryId,
+        'name': name,
+        'iconCode': iconCode,
+        'iconFontFamily': iconFontFamily,
+      };
 }

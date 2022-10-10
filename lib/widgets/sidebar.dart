@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
+import 'package:sounds_of_rpg/services/storage_service.dart';
 import 'package:sounds_of_rpg/widgets/add_category_dialog.dart';
 
 class Sidebar extends StatefulWidget {
@@ -18,7 +21,7 @@ class Sidebar extends StatefulWidget {
 }
 
 class _SidebarState extends State<Sidebar> {
-  void refreshCategories() {}
+  final StorageService _storageService = StorageService();
 
   void showAddDialog(BuildContext context) async {
     var category = await showDialog<Category>(
@@ -26,6 +29,11 @@ class _SidebarState extends State<Sidebar> {
       builder: (context) => const AddCategoryDialog(),
     );
     if (category == null) return;
+    var directory = Directory('storage/${category.id}');
+    await directory.create(recursive: true);
+
+    _storageService.saveCategories(widget.categories);
+
     setState(() {
       widget.categories.add(category);
     });

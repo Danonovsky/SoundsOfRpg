@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
-import 'package:sounds_of_rpg/widgets/icon_button_right_padding.dart';
+import 'package:sounds_of_rpg/entities/sound.dart';
+import 'package:sounds_of_rpg/services/storage_service.dart';
 import 'package:sounds_of_rpg/widgets/sidebar.dart';
 import 'package:sounds_of_rpg/widgets/sound_tile.dart';
 import 'package:window_manager/window_manager.dart';
@@ -34,7 +35,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final String _useLightModePrefsName = 'useLightMode';
-  final List<Category> _categories = [];
+  List<Category> _categories = [];
+  final List<Sound> _sounds = [];
+  final StorageService _storageService = StorageService();
+  Category? _selectedCategory;
   int _selectedIndex = 0;
   bool _useLightMode = true;
   late SharedPreferences prefs;
@@ -48,7 +52,9 @@ class _MyHomePageState extends State<MyHomePage> {
         _useLightMode = lightModeFromPrefs;
       });
     });
-    loadCategories();
+    _storageService.loadCategories().then((value) {
+      setState(() => _categories = value);
+    });
   }
 
   Brightness get brightness =>
@@ -59,37 +65,15 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _useLightMode = !_useLightMode;
     });
-    var result = await prefs.setBool(_useLightModePrefsName, _useLightMode);
+    await prefs.setBool(_useLightModePrefsName, _useLightMode);
   }
 
   void changeDestination(int index) {
     setState(() {
       _selectedIndex = index;
+      _selectedCategory =
+          _selectedIndex < 2 ? null : _categories[_selectedIndex - 2];
     });
-  }
-
-  Future<File> _getJsonFileForCategories() async {
-    var jsonFile = File('storage/categories.json');
-    if (await jsonFile.exists() == false) {
-      jsonFile = await File('storage/categories.json').create(recursive: true);
-      await jsonFile.writeAsString('[]');
-    }
-    return jsonFile;
-  }
-
-  loadCategories() async {
-    var jsonString = await (await _getJsonFileForCategories()).readAsString();
-    var categories = jsonDecode(jsonString) as List<dynamic>;
-    for (var entity in categories) {
-      var category = Category.fromJson(entity);
-      setState(() => _categories.add(category));
-    }
-  }
-
-  saveCategories() async {
-    var jsonFile = await _getJsonFileForCategories();
-    var jsonString = jsonEncode(_categories);
-    await jsonFile.writeAsString(jsonString);
   }
 
   @override
@@ -111,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Padding(
               padding: const EdgeInsets.only(right: 15),
               child: IconButton(
-                onPressed: saveCategories,
+                onPressed: () {},
                 icon: const Icon(Icons.save),
               ),
             ),
@@ -135,6 +119,9 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Center(
                 child: Column(
                   children: [
+                    Center(
+                      child: Text(_selectedCategory?.name ?? 'None'),
+                    ),
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
