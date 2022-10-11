@@ -49,7 +49,7 @@ class _SidebarState extends State<Sidebar> {
         const NavigationRailDestination(
             icon: Icon(Icons.list), label: Text('All')),
         const NavigationRailDestination(
-            icon: Icon(Icons.abc), label: Text('xD')),
+            icon: Icon(Icons.list_alt), label: Text('Also All')),
         ...widget.categories.map((e) => NavigationRailDestination(
             icon: Icon(
               IconData(

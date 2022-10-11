@@ -77,6 +77,22 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  removeCategory() async {
+    if (_selectedCategory == null) {
+      return;
+    }
+    if (_sounds.any((element) => element.categoryId == _selectedCategory?.id)) {
+      return;
+    }
+    await _storageService.removeCategory(_selectedCategory!);
+    var indexToRemove = _selectedIndex - 2;
+    changeDestination(_selectedIndex - 1);
+    setState(() {
+      _categories.removeAt(indexToRemove);
+    });
+    await _storageService.saveCategories(_categories);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -96,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Visibility(
               visible: _selectedCategory != null,
               child: IconButtonWithPadding(
-                click: () {},
+                click: removeCategory,
                 icon: const Icon(Icons.delete),
                 padding: const EdgeInsets.only(right: 15),
               ),
@@ -120,9 +136,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Column(
                   children: [
                     Center(
-                      child: Text(_selectedCategory?.name ?? 'None'),
-                    ),
-                    Center(
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: IconButton(
@@ -138,7 +151,6 @@ class _MyHomePageState extends State<MyHomePage> {
                             100, (index) => SoundTile(title: '$index')),
                       ),
                     ),
-                    Text('$_selectedIndex'),
                   ],
                 ),
               ),

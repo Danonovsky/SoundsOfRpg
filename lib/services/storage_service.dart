@@ -17,6 +17,12 @@ class StorageService {
     await jsonFile.writeAsString(jsonString);
   }
 
+  removeCategory(Category category) async {
+    var directory = Directory('storage/${category.id}');
+    if (await directory.exists() == false) return;
+    await directory.delete();
+  }
+
   Future<List<Sound>> loadSounds() async {
     var jsonString = await (await _getJsonFileForSounds()).readAsString();
     var sounds = jsonDecode(jsonString) as List<dynamic>;
