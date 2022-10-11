@@ -15,9 +15,6 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
   String? _name;
   String _iconSearch = '';
   IconData? _selectedIcon;
-  static var icons = allIcons;
-
-  static String _display(MapEntry<String, IconData> icon) => icon.key;
 
   @override
   Widget build(BuildContext context) => AlertDialog(
@@ -45,7 +42,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
               ),
             ),
             Icon(_selectedIcon),
-            Container(
+            SizedBox(
               height: 300,
               width: 300,
               child: GridView.count(

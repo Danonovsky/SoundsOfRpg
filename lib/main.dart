@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
 import 'package:sounds_of_rpg/entities/sound.dart';
 import 'package:sounds_of_rpg/services/storage_service.dart';
+import 'package:sounds_of_rpg/widgets/icon_button_with_padding.dart';
 import 'package:sounds_of_rpg/widgets/sidebar.dart';
 import 'package:sounds_of_rpg/widgets/sound_tile.dart';
 import 'package:window_manager/window_manager.dart';
@@ -92,19 +93,18 @@ class _MyHomePageState extends State<MyHomePage> {
           title: const Text('Sounds of RPG'),
           elevation: 0.5,
           actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.save),
+            Visibility(
+              visible: _selectedCategory != null,
+              child: IconButtonWithPadding(
+                click: () {},
+                icon: const Icon(Icons.delete),
+                padding: const EdgeInsets.only(right: 15),
               ),
             ),
-            Padding(
+            IconButtonWithPadding(
+              click: updateLightMode,
+              icon: Icon(_useLightMode ? Icons.dark_mode : Icons.light_mode),
               padding: const EdgeInsets.only(right: 15),
-              child: IconButton(
-                onPressed: updateLightMode,
-                icon: Icon(_useLightMode ? Icons.dark_mode : Icons.light_mode),
-              ),
             ),
           ],
         ),
