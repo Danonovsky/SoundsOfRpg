@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 class Sound {
   final String id;
   final String categoryId;
@@ -26,4 +28,22 @@ class Sound {
         'iconCode': iconCode,
         'iconFontFamily': iconFontFamily,
       };
+}
+
+class SoundDto {
+  final String id;
+  final String categoryId;
+  final String name;
+  final int iconCode;
+  final String iconFontFamily;
+  final String path;
+
+  SoundDto({
+    required this.id,
+    required this.categoryId,
+    required this.name,
+    required this.iconCode,
+    required this.iconFontFamily,
+    required this.path,
+  });
 }

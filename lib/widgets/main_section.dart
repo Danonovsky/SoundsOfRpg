@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
 import 'package:sounds_of_rpg/entities/sound.dart';
@@ -17,11 +19,18 @@ class MainSection extends StatefulWidget {
 
 class _MainSectionState extends State<MainSection> {
   void showAddDialog() async {
-    var sound = await showDialog<Sound>(
+    var sound = await showDialog<SoundDto>(
       context: context,
-      builder: (context) => const AddSoundDialog(),
+      builder: (context) => AddSoundDialog(
+        selectedCategory: widget.selectedCategory!,
+      ),
     );
     if (sound == null) return;
+    var file = File(sound.path);
+    var newFile = File('storage/${sound.categoryId}/${sound.id}');
+    var data = await file.readAsBytes();
+    await newFile.create();
+    await newFile.writeAsBytes(data);
     /*var directory = Directory('storage/${category.id}');
     await directory.create(recursive: true);
 
@@ -38,14 +47,17 @@ class _MainSectionState extends State<MainSection> {
       child: Center(
         child: Column(
           children: [
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: IconButton(
-                  onPressed: () {
-                    showAddDialog();
-                  },
-                  icon: const Icon(Icons.add),
+            Visibility(
+              visible: widget.selectedCategory != null,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: IconButton(
+                    onPressed: () {
+                      showAddDialog();
+                    },
+                    icon: const Icon(Icons.add),
+                  ),
                 ),
               ),
             ),
