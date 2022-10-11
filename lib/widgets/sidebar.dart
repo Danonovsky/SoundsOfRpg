@@ -23,7 +23,7 @@ class Sidebar extends StatefulWidget {
 class _SidebarState extends State<Sidebar> {
   final StorageService _storageService = StorageService();
 
-  void showAddDialog(BuildContext context) async {
+  void showAddDialog() async {
     var category = await showDialog<Category>(
       context: context,
       builder: (context) => const AddCategoryDialog(),
@@ -62,7 +62,7 @@ class _SidebarState extends State<Sidebar> {
       trailing: IconButton(
           icon: const Icon(Icons.add),
           onPressed: () {
-            showAddDialog(context);
+            showAddDialog();
           }),
     );
   }

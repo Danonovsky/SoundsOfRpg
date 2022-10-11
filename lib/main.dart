@@ -3,10 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
 import 'package:sounds_of_rpg/entities/sound.dart';
 import 'package:sounds_of_rpg/services/storage_service.dart';
-import 'package:sounds_of_rpg/widgets/add_sound_dialog.dart';
+import 'package:sounds_of_rpg/widgets/main_section.dart';
 import 'package:sounds_of_rpg/widgets/icon_button_with_padding.dart';
 import 'package:sounds_of_rpg/widgets/sidebar.dart';
-import 'package:sounds_of_rpg/widgets/sound_tile.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -91,23 +90,6 @@ class _MyHomePageState extends State<MyHomePage> {
     await _storageService.saveCategories(_categories);
   }
 
-  void showAddDialog() async {
-    print('jazda!');
-    var sound = await showDialog<Sound>(
-      context: context,
-      builder: (context) => const AddSoundDialog(),
-    );
-    if (sound == null) return;
-    /*var directory = Directory('storage/${category.id}');
-    await directory.create(recursive: true);
-
-    _storageService.saveCategories(widget.categories);
-
-    setState(() {
-      widget.categories.add(category);
-    })*/
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -146,31 +128,9 @@ class _MyHomePageState extends State<MyHomePage> {
               categories: _categories,
               changeDestination: changeDestination,
             ),
-            Expanded(
-              child: Center(
-                child: Column(
-                  children: [
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: IconButton(
-                          onPressed: () async {
-                            showAddDialog();
-                          },
-                          icon: const Icon(Icons.add),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: GridView.count(
-                        crossAxisCount: 5,
-                        children: List.generate(
-                            100, (index) => SoundTile(title: '$index')),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            MainSection(
+              sounds: _sounds,
+              selectedCategory: _selectedCategory,
             ),
           ],
         ),

@@ -18,7 +18,7 @@ class _AddSoundDialogState extends State<AddSoundDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-        title: const Text('Add category'),
+        title: const Text('Add sound'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
