@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
 import 'package:sounds_of_rpg/entities/sound.dart';
 import 'package:sounds_of_rpg/widgets/add_sound_dialog.dart';
@@ -18,6 +19,11 @@ class MainSection extends StatefulWidget {
 }
 
 class _MainSectionState extends State<MainSection> {
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
   void showAddDialog() async {
     var sound = await showDialog<SoundDto>(
       context: context,

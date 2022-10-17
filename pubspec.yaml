@@ -20,6 +20,7 @@ dependencies:
   sqflite:
   path:
   file_picker:
+  path_provider:
 
 dev_dependencies:
   flutter_test:

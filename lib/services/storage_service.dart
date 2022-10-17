@@ -1,14 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:path_provider/path_provider.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
 import 'package:sounds_of_rpg/entities/sound.dart';
 
 class StorageService {
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return '${directory.path}/sounds-of-rpg';
+  }
+
   Future<List<Category>> loadCategories() async {
     var jsonString = await (await _getJsonFileForCategories()).readAsString();
     var categories = jsonDecode(jsonString) as List<dynamic>;
     return categories.map((e) => Category.fromJson(e)).toList();
+  }
+
+  saveCategoryDirectory(Category category) async {
+    var directory = Directory('${await _localPath}storage/${category.id}');
+    await directory.create(recursive: true);
   }
 
   saveCategories(List<Category> categories) async {
@@ -18,7 +29,7 @@ class StorageService {
   }
 
   removeCategory(Category category) async {
-    var directory = Directory('storage/${category.id}');
+    var directory = Directory('${await _localPath}/storage/${category.id}');
     if (await directory.exists() == false) return;
     await directory.delete();
   }
@@ -36,18 +47,20 @@ class StorageService {
   }
 
   Future<File> _getJsonFileForSounds() async {
-    var jsonFile = File('storage/sounds.json');
+    var jsonFile = File('${await _localPath}/storage/sounds.json');
     if (await jsonFile.exists() == false) {
-      jsonFile = await File('storage/sounds.json').create(recursive: true);
+      jsonFile = await File('${await _localPath}/storage/sounds.json')
+          .create(recursive: true);
       await jsonFile.writeAsString('[]');
     }
     return jsonFile;
   }
 
   Future<File> _getJsonFileForCategories() async {
-    var jsonFile = File('storage/categories.json');
+    var jsonFile = File('${await _localPath}/storage/categories.json');
     if (await jsonFile.exists() == false) {
-      jsonFile = await File('storage/categories.json').create(recursive: true);
+      jsonFile = await File('${await _localPath}/storage/categories.json')
+          .create(recursive: true);
       await jsonFile.writeAsString('[]');
     }
     return jsonFile;

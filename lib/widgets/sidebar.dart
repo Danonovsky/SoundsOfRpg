@@ -29,10 +29,8 @@ class _SidebarState extends State<Sidebar> {
       builder: (context) => const AddCategoryDialog(),
     );
     if (category == null) return;
-    var directory = Directory('storage/${category.id}');
-    await directory.create(recursive: true);
-
-    _storageService.saveCategories(widget.categories);
+    await _storageService.saveCategoryDirectory(category);
+    await _storageService.saveCategories(widget.categories);
 
     setState(() {
       widget.categories.add(category);
