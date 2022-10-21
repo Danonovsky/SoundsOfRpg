@@ -4,10 +4,11 @@ import 'package:sounds_of_rpg/entities/sound.dart';
 class SoundTile extends StatelessWidget {
   final Sound sound;
 
-  const SoundTile({super.key, required this.sound});
+  const SoundTile({super.key, required this.sound, required this.onDelete});
 
   playSingle() {}
   playLoop() {}
+  final void Function() onDelete;
 
   @override
   Widget build(BuildContext context) => Card(
@@ -45,6 +46,17 @@ class SoundTile extends StatelessWidget {
                 child: IconButton(
                   onPressed: playSingle,
                   icon: const Icon(Icons.repeat),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 15,
+              right: 15,
+              child: Tooltip(
+                message: 'Delete',
+                child: IconButton(
+                  onPressed: onDelete,
+                  icon: const Icon(Icons.delete),
                 ),
               ),
             ),

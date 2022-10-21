@@ -45,13 +45,22 @@ class StorageService {
     await directory.delete();
   }
 
+  removeSound(Sound sound) async {
+    var file =
+        Directory('${await _localPath}storage/${sound.categoryId}/${sound.id}');
+    print(file.path);
+    if (await file.exists() == false) return;
+    print('Deleting file');
+    await file.delete();
+  }
+
   Future<List<Sound>> loadSounds() async {
     var jsonString = await (await _getJsonFileForSounds()).readAsString();
     var sounds = jsonDecode(jsonString) as List<dynamic>;
     return sounds.map((e) => Sound.fromJson(e)).toList();
   }
 
-  saveFiles(List<Sound> sounds) async {
+  saveSounds(List<Sound> sounds) async {
     var jsonFile = await _getJsonFileForSounds();
     var jsonString = jsonEncode(sounds);
     await jsonFile.writeAsString(jsonString);

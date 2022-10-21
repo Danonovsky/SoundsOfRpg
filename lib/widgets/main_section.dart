@@ -36,7 +36,15 @@ class _MainSectionState extends State<MainSection> {
           id: sound.id,
           name: sound.name));
     });
-    await _storageService.saveFiles(widget.sounds);
+    await _storageService.saveSounds(widget.sounds);
+  }
+
+  void deleteSound(Sound sound) async {
+    setState(() {
+      widget.sounds.remove(sound);
+    });
+    await _storageService.removeSound(sound);
+    await _storageService.saveSounds(widget.sounds);
   }
 
   @override
@@ -71,7 +79,8 @@ class _MainSectionState extends State<MainSection> {
                       },
                     )
                     .map(
-                      (e) => SoundTile(sound: e),
+                      (e) =>
+                          SoundTile(sound: e, onDelete: () => deleteSound(e)),
                     )
                     .toList(),
               ),
