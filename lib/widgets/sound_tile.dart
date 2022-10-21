@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sounds_of_rpg/entities/sound.dart';
 
 class SoundTile extends StatelessWidget {
-  final String title;
+  final Sound sound;
 
-  const SoundTile({super.key, required this.title});
+  const SoundTile({super.key, required this.sound});
 
   playSingle() {}
   playLoop() {}
@@ -14,10 +15,13 @@ class SoundTile extends StatelessWidget {
           children: [
             Center(
               child: Tooltip(
-                message: title,
+                message: sound.name,
                 preferBelow: false,
-                child: const Icon(
-                  Icons.music_note,
+                child: Icon(
+                  IconData(
+                    sound.iconCode,
+                    fontFamily: sound.iconFontFamily,
+                  ),
                   size: 75,
                 ),
               ),

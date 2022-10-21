@@ -71,7 +71,7 @@ class _MainSectionState extends State<MainSection> {
                       },
                     )
                     .map(
-                      (e) => SoundTile(title: e.name),
+                      (e) => SoundTile(sound: e),
                     )
                     .toList(),
               ),
