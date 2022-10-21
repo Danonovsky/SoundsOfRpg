@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
 import 'package:sounds_of_rpg/entities/sound.dart';
 import 'package:sounds_of_rpg/services/storage_service.dart';
@@ -21,10 +18,6 @@ class MainSection extends StatefulWidget {
 
 class _MainSectionState extends State<MainSection> {
   final StorageService _storageService = StorageService();
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
-  }
 
   void showAddDialog() async {
     var sound = await showDialog<SoundDto>(
@@ -35,14 +28,15 @@ class _MainSectionState extends State<MainSection> {
     );
     if (sound == null) return;
     await _storageService.saveSoundFile(sound);
-    /*var directory = Directory('storage/${category.id}');
-    await directory.create(recursive: true);
-
-    _storageService.saveCategories(widget.categories);
-
     setState(() {
-      widget.categories.add(category);
-    })*/
+      widget.sounds.add(Sound(
+          categoryId: sound.categoryId,
+          iconCode: sound.iconCode,
+          iconFontFamily: sound.iconFontFamily,
+          id: sound.id,
+          name: sound.name));
+    });
+    await _storageService.saveFiles(widget.sounds);
   }
 
   @override

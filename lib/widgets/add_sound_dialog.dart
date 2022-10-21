@@ -90,12 +90,14 @@ class _AddSoundDialogState extends State<AddSoundDialog> {
                 return;
               }
 
+              var icon = _selectedIcon ?? Icons.abc;
+
               sound = SoundDto(
                 id: const Uuid().v4(),
                 categoryId: widget.selectedCategory.id,
-                name: '',
-                iconCode: 0,
-                iconFontFamily: '',
+                name: _name!,
+                iconCode: icon.codePoint,
+                iconFontFamily: icon.fontFamily!,
                 path: _selectedFile!.path!,
               );
               Navigator.pop(context, sound);
