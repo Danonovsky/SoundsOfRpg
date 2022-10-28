@@ -7,11 +7,11 @@ import 'package:sounds_of_rpg/widgets/add_sound_dialog.dart';
 import 'package:sounds_of_rpg/widgets/sound_tile.dart';
 
 class MainSection extends StatefulWidget {
-  MainSection({Key? key, required this.sounds, required this.selectedCategory})
+  const MainSection(
+      {Key? key, required this.sounds, required this.selectedCategory})
       : super(key: key);
-
-  late List<Sound> sounds;
-  late Category? selectedCategory;
+  final List<Sound> sounds;
+  final Category? selectedCategory;
 
   @override
   State<MainSection> createState() => _MainSectionState();
@@ -51,12 +51,19 @@ class _MainSectionState extends State<MainSection> {
     await _storageService.saveSounds(widget.sounds);
   }
 
-  void playSingle(Sound sound) async {
+  Future playSingle(Sound sound) async {
+    print('single');
     await _player
         .play(DeviceFileSource(await _storageService.getSoundFilePath(sound)));
   }
 
-  void playLoop(Sound sound) {}
+  Future playLoop(Sound sound) async {
+    print('loop');
+    await _player.play(
+      DeviceFileSource(await _storageService.getSoundFilePath(sound)),
+    );
+    await playLoop(sound);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +100,8 @@ class _MainSectionState extends State<MainSection> {
                       (e) => SoundTile(
                         sound: e,
                         onDelete: () => deleteSound(e),
-                        playSingle: () => playSingle(e),
-                        playLoop: () => playLoop(e),
+                        playSingle: () async => await playSingle(e),
+                        playLoop: () async => await playLoop(e),
                       ),
                     )
                     .toList(),

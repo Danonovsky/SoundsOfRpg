@@ -50,7 +50,7 @@ class SoundTile extends StatelessWidget {
               child: Tooltip(
                 message: 'Play in loop',
                 child: IconButton(
-                  onPressed: playSingle,
+                  onPressed: playLoop,
                   icon: const Icon(Icons.repeat),
                 ),
               ),
