@@ -62,7 +62,11 @@ class _MainSectionState extends State<MainSection> {
     await _player.play(
       DeviceFileSource(await _storageService.getSoundFilePath(sound)),
     );
-    await playLoop(sound);
+    _player.onPlayerComplete.listen((event) async {
+      await _player.play(
+        DeviceFileSource(await _storageService.getSoundFilePath(sound)),
+      );
+    });
   }
 
   @override
