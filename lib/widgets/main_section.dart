@@ -30,11 +30,13 @@ class _MainSectionState extends State<MainSection> {
     await _storageService.saveSoundFile(sound);
     setState(() {
       widget.sounds.add(Sound(
-          categoryId: sound.categoryId,
-          iconCode: sound.iconCode,
-          iconFontFamily: sound.iconFontFamily,
-          id: sound.id,
-          name: sound.name));
+        categoryId: sound.categoryId,
+        iconCode: sound.iconCode,
+        iconFontFamily: sound.iconFontFamily,
+        id: sound.id,
+        name: sound.name,
+        extension: '',
+      ));
     });
     await _storageService.saveSounds(widget.sounds);
   }

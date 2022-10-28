@@ -2,6 +2,7 @@ class Sound {
   final String id;
   final String categoryId;
   final String name;
+  final String extension;
   final int iconCode;
   final String iconFontFamily;
 
@@ -9,6 +10,7 @@ class Sound {
       {required this.id,
       required this.categoryId,
       required this.name,
+      required this.extension,
       required this.iconCode,
       required this.iconFontFamily});
 
@@ -16,6 +18,7 @@ class Sound {
       : id = json['id'],
         categoryId = json['categoryId'],
         name = json['name'],
+        extension = json['extension'],
         iconCode = json['iconCode'],
         iconFontFamily = json['iconFontFamily'];
 
@@ -23,6 +26,7 @@ class Sound {
         'id': id,
         'categoryId': categoryId,
         'name': name,
+        'extension': extension,
         'iconCode': iconCode,
         'iconFontFamily': iconFontFamily,
       };
@@ -35,6 +39,7 @@ class SoundDto {
   final int iconCode;
   final String iconFontFamily;
   final String path;
+  final String extension;
 
   SoundDto({
     required this.id,
@@ -43,5 +48,6 @@ class SoundDto {
     required this.iconCode,
     required this.iconFontFamily,
     required this.path,
+    required this.extension,
   });
 }

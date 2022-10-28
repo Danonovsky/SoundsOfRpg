@@ -27,7 +27,6 @@ class StorageService {
 
     var file = File(sound.path);
     await file.copy(newPath);
-    //await file.create();
   }
 
   saveCategories(List<Category> categories) async {
