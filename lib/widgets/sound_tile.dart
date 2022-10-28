@@ -4,10 +4,16 @@ import 'package:sounds_of_rpg/entities/sound.dart';
 class SoundTile extends StatelessWidget {
   final Sound sound;
 
-  const SoundTile({super.key, required this.sound, required this.onDelete});
+  const SoundTile({
+    super.key,
+    required this.sound,
+    required this.onDelete,
+    required this.playSingle,
+    required this.playLoop,
+  });
 
-  playSingle() {}
-  playLoop() {}
+  final void Function() playSingle;
+  final void Function() playLoop;
   final void Function() onDelete;
 
   @override

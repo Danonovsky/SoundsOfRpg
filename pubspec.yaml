@@ -21,6 +21,7 @@ dependencies:
   path:
   file_picker:
   path_provider:
+  audioplayers:
 
 dev_dependencies:
   flutter_test:

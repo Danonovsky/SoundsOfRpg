@@ -43,10 +43,8 @@ class StorageService {
 
   removeSound(Sound sound) async {
     var file =
-        Directory('${await _localPath}storage/${sound.categoryId}/${sound.id}');
-    print(file.path);
+        File('${await _localPath}storage/${sound.categoryId}/${sound.id}');
     if (await file.exists() == false) return;
-    print('Deleting file');
     await file.delete();
   }
 

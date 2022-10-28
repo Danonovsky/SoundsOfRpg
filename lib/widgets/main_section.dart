@@ -81,8 +81,12 @@ class _MainSectionState extends State<MainSection> {
                       },
                     )
                     .map(
-                      (e) =>
-                          SoundTile(sound: e, onDelete: () => deleteSound(e)),
+                      (e) => SoundTile(
+                        sound: e,
+                        onDelete: () => deleteSound(e),
+                        playSingle: () {},
+                        playLoop: () {},
+                      ),
                     )
                     .toList(),
               ),
