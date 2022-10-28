@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Sounds of RPG',
       themeMode: themeMode,
       theme: ThemeData(
         colorSchemeSeed: Colors.green,
