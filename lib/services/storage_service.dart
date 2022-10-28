@@ -8,7 +8,11 @@ import 'package:sounds_of_rpg/entities/sound.dart';
 class StorageService {
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
-    return '${directory.path}/sounds-of-rpg/';
+    return '${directory.path}/sounds-of-rpg/storage/';
+  }
+
+  Future<String> getSoundFilePath(Sound sound) async {
+    return '${await _localPath}${sound.categoryId}/${sound.id}';
   }
 
   Future<List<Category>> loadCategories() async {
@@ -18,12 +22,12 @@ class StorageService {
   }
 
   saveCategoryDirectory(Category category) async {
-    var directory = Directory('${await _localPath}storage/${category.id}');
+    var directory = Directory('${await _localPath}${category.id}');
     await directory.create(recursive: true);
   }
 
   saveSoundFile(SoundDto sound) async {
-    var newPath = '${await _localPath}storage/${sound.categoryId}/${sound.id}';
+    var newPath = '${await _localPath}${sound.categoryId}/${sound.id}';
 
     var file = File(sound.path);
     await file.copy(newPath);
@@ -36,14 +40,13 @@ class StorageService {
   }
 
   removeCategory(Category category) async {
-    var directory = Directory('${await _localPath}storage/${category.id}');
+    var directory = Directory('${await _localPath}${category.id}');
     if (await directory.exists() == false) return;
     await directory.delete();
   }
 
   removeSound(Sound sound) async {
-    var file =
-        File('${await _localPath}storage/${sound.categoryId}/${sound.id}');
+    var file = File('${await _localPath}${sound.categoryId}/${sound.id}');
     if (await file.exists() == false) return;
     await file.delete();
   }
@@ -61,19 +64,19 @@ class StorageService {
   }
 
   Future<File> _getJsonFileForSounds() async {
-    var jsonFile = File('${await _localPath}storage/sounds.json');
+    var jsonFile = File('${await _localPath}sounds.json');
     if (await jsonFile.exists() == false) {
-      jsonFile = await File('${await _localPath}storage/sounds.json')
-          .create(recursive: true);
+      jsonFile =
+          await File('${await _localPath}sounds.json').create(recursive: true);
       await jsonFile.writeAsString('[]');
     }
     return jsonFile;
   }
 
   Future<File> _getJsonFileForCategories() async {
-    var jsonFile = File('${await _localPath}storage/categories.json');
+    var jsonFile = File('${await _localPath}categories.json');
     if (await jsonFile.exists() == false) {
-      jsonFile = await File('${await _localPath}storage/categories.json')
+      jsonFile = await File('${await _localPath}categories.json')
           .create(recursive: true);
       await jsonFile.writeAsString('[]');
     }

@@ -34,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final String _useLightModePrefsName = 'useLightMode';
   List<Category> _categories = [];
-  final List<Sound> _sounds = [];
+  List<Sound> _sounds = [];
   final StorageService _storageService = StorageService();
   Category? _selectedCategory;
   int _selectedIndex = 0;
@@ -52,6 +52,9 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     _storageService.loadCategories().then((value) {
       setState(() => _categories = value);
+    });
+    _storageService.loadSounds().then((value) {
+      setState(() => _sounds = value);
     });
   }
 

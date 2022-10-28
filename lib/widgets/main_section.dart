@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
 import 'package:sounds_of_rpg/entities/sound.dart';
@@ -18,6 +19,7 @@ class MainSection extends StatefulWidget {
 
 class _MainSectionState extends State<MainSection> {
   final StorageService _storageService = StorageService();
+  final AudioPlayer _player = AudioPlayer();
 
   Future showAddDialog() async {
     var sound = await showDialog<SoundDto>(
@@ -48,6 +50,13 @@ class _MainSectionState extends State<MainSection> {
     await _storageService.removeSound(sound);
     await _storageService.saveSounds(widget.sounds);
   }
+
+  void playSingle(Sound sound) async {
+    await _player
+        .play(DeviceFileSource(await _storageService.getSoundFilePath(sound)));
+  }
+
+  void playLoop(Sound sound) {}
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +93,8 @@ class _MainSectionState extends State<MainSection> {
                       (e) => SoundTile(
                         sound: e,
                         onDelete: () => deleteSound(e),
-                        playSingle: () {},
-                        playLoop: () {},
+                        playSingle: () => playSingle(e),
+                        playLoop: () => playLoop(e),
                       ),
                     )
                     .toList(),
