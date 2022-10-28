@@ -36,7 +36,9 @@ class _AddSoundDialogState extends State<AddSoundDialog> {
             ),
             TextButton(
               onPressed: () async {
-                var result = await FilePicker.platform.pickFiles();
+                var result = await FilePicker.platform.pickFiles(
+                  type: FileType.audio,
+                );
                 if (result == null || result.count < 1) return;
                 setState(() {
                   _selectedFile = result.files.first;

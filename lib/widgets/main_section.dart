@@ -19,7 +19,7 @@ class MainSection extends StatefulWidget {
 class _MainSectionState extends State<MainSection> {
   final StorageService _storageService = StorageService();
 
-  void showAddDialog() async {
+  Future showAddDialog() async {
     var sound = await showDialog<SoundDto>(
       context: context,
       builder: (context) => AddSoundDialog(
@@ -59,8 +59,8 @@ class _MainSectionState extends State<MainSection> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: IconButton(
-                    onPressed: () {
-                      showAddDialog();
+                    onPressed: () async {
+                      await showAddDialog();
                     },
                     icon: const Icon(Icons.add),
                   ),

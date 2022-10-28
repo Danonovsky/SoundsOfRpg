@@ -23,14 +23,11 @@ class StorageService {
   }
 
   saveSoundFile(SoundDto sound) async {
-    var newFile =
-        File('${await _localPath}storage/${sound.categoryId}/${sound.id}');
+    var newPath = '${await _localPath}storage/${sound.categoryId}/${sound.id}';
 
     var file = File(sound.path);
-    var data = await file.readAsBytes();
-    await newFile.create();
-    await newFile.writeAsBytes(data);
-    await file.create();
+    await file.copy(newPath);
+    //await file.create();
   }
 
   saveCategories(List<Category> categories) async {

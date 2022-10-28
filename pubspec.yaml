@@ -30,7 +30,5 @@ dev_dependencies:
 
 
 flutter:
-  assets:
-    - assets/categories.json
 
   uses-material-design: true
