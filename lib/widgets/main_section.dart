@@ -19,7 +19,15 @@ class MainSection extends StatefulWidget {
 
 class _MainSectionState extends State<MainSection> {
   final StorageService _storageService = StorageService();
-  final AudioPlayer _player = AudioPlayer();
+  final Map<String, AudioPlayer> _players = {};
+
+  @override
+  void initState() {
+    super.initState();
+    for (var sound in widget.sounds) {
+      _players[sound.id] = AudioPlayer(playerId: sound.id);
+    }
+  }
 
   Future showAddDialog() async {
     var sound = await showDialog<SoundDto>(
@@ -51,21 +59,34 @@ class _MainSectionState extends State<MainSection> {
     await _storageService.saveSounds(widget.sounds);
   }
 
+  AudioPlayer getPlayer(Sound sound) {
+    if (_players.containsKey(sound.id) == false) {
+      _players[sound.id] = AudioPlayer(playerId: sound.id);
+    }
+    return _players[sound.id]!;
+  }
+
   Future playSingle(Sound sound) async {
-    print('single');
-    await _player
-        .play(DeviceFileSource(await _storageService.getSoundFilePath(sound)));
+    var player = getPlayer(sound);
+    await player.play(
+      DeviceFileSource(await _storageService.getSoundFilePath(sound)),
+    );
   }
 
   Future playLoop(Sound sound) async {
-    print('loop');
-    await _player.play(
+    var player = getPlayer(sound);
+    if (player.releaseMode == ReleaseMode.loop) {
+      setState(() {
+        player.setReleaseMode(ReleaseMode.release);
+      });
+      await player.release();
+      return;
+    }
+    await player.play(
       DeviceFileSource(await _storageService.getSoundFilePath(sound)),
     );
-    _player.onPlayerComplete.listen((event) async {
-      await _player.play(
-        DeviceFileSource(await _storageService.getSoundFilePath(sound)),
-      );
+    setState(() {
+      player.setReleaseMode(ReleaseMode.loop);
     });
   }
 
@@ -103,6 +124,7 @@ class _MainSectionState extends State<MainSection> {
                     .map(
                       (e) => SoundTile(
                         sound: e,
+                        player: getPlayer(e),
                         onDelete: () => deleteSound(e),
                         playSingle: () async => await playSingle(e),
                         playLoop: () async => await playLoop(e),

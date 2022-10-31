@@ -1,12 +1,15 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sounds_of_rpg/entities/sound.dart';
 
 class SoundTile extends StatelessWidget {
   final Sound sound;
+  final AudioPlayer player;
 
   const SoundTile({
     super.key,
     required this.sound,
+    required this.player,
     required this.onDelete,
     required this.playSingle,
     required this.playLoop,
@@ -51,7 +54,9 @@ class SoundTile extends StatelessWidget {
                 message: 'Play in loop',
                 child: IconButton(
                   onPressed: playLoop,
-                  icon: const Icon(Icons.repeat),
+                  icon: player.releaseMode == ReleaseMode.loop
+                      ? const Icon(Icons.pause)
+                      : const Icon(Icons.loop),
                 ),
               ),
             ),
