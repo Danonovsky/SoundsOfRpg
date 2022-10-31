@@ -66,30 +66,6 @@ class _MainSectionState extends State<MainSection> {
     return _players[sound.id]!;
   }
 
-  Future playSingle(Sound sound) async {
-    var player = getPlayer(sound);
-    await player.play(
-      DeviceFileSource(await _storageService.getSoundFilePath(sound)),
-    );
-  }
-
-  Future playLoop(Sound sound) async {
-    var player = getPlayer(sound);
-    if (player.releaseMode == ReleaseMode.loop) {
-      setState(() {
-        player.setReleaseMode(ReleaseMode.release);
-      });
-      await player.release();
-      return;
-    }
-    await player.play(
-      DeviceFileSource(await _storageService.getSoundFilePath(sound)),
-    );
-    setState(() {
-      player.setReleaseMode(ReleaseMode.loop);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -126,8 +102,6 @@ class _MainSectionState extends State<MainSection> {
                         sound: e,
                         player: getPlayer(e),
                         onDelete: () => deleteSound(e),
-                        playSingle: () async => await playSingle(e),
-                        playLoop: () async => await playLoop(e),
                       ),
                     )
                     .toList(),
