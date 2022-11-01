@@ -74,7 +74,6 @@ class _MainSectionState extends State<MainSection> {
       child: Center(
         child: Column(
           children: [
-            Text(_players.length.toString()),
             Visibility(
               visible: widget.selectedCategory != null,
               child: Center(
