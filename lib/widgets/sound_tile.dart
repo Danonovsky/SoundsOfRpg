@@ -12,7 +12,6 @@ class SoundTile extends StatefulWidget {
   });
   final Sound sound;
   final AudioPlayer player;
-  final StorageService _storageService = StorageService();
   final void Function() onDelete;
 
   @override
@@ -20,18 +19,33 @@ class SoundTile extends StatefulWidget {
 }
 
 class _SoundTileState extends State<SoundTile> {
+  bool _addedListener = false;
+  final StorageService _storageService = StorageService();
   @override
   void initState() {
     super.initState();
-    widget.player.onPlayerStateChanged.listen((event) {
-      setState(() {});
-    });
   }
 
-  Future<DeviceFileSource> get source async => DeviceFileSource(
-      await widget._storageService.getSoundFilePath(widget.sound));
+  @override
+  void dispose() {
+    super.dispose();
+    widget.player.dispose();
+  }
+
+  Future<DeviceFileSource> get source async =>
+      DeviceFileSource(await _storageService.getSoundFilePath(widget.sound));
+
+  ensureListener() {
+    if (_addedListener == false) {
+      _addedListener = true;
+      widget.player.onPlayerStateChanged.listen((event) {
+        setState(() {});
+      });
+    }
+  }
 
   Future playSingle() async {
+    ensureListener();
     if (widget.player.state == PlayerState.playing) {
       await widget.player.setReleaseMode(ReleaseMode.release);
       await widget.player.release();
@@ -41,6 +55,7 @@ class _SoundTileState extends State<SoundTile> {
   }
 
   Future playLoop() async {
+    ensureListener();
     if (widget.player.releaseMode == ReleaseMode.loop) {
       widget.player.setReleaseMode(ReleaseMode.release);
       await widget.player.release();

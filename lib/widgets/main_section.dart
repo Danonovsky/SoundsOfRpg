@@ -53,10 +53,10 @@ class _MainSectionState extends State<MainSection> {
 
   void deleteSound(Sound sound) async {
     _players[sound.id]?.release();
-    _players.remove(sound.id);
     setState(() {
       widget.sounds.remove(sound);
     });
+    _players.remove(sound.id);
     await _storageService.removeSound(sound);
     await _storageService.saveSounds(widget.sounds);
   }
