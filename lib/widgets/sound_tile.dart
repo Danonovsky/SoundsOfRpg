@@ -19,30 +19,27 @@ class SoundTile extends StatefulWidget {
 }
 
 class _SoundTileState extends State<SoundTile> {
-  bool _addedListener = false;
   final StorageService _storageService = StorageService();
   @override
   void initState() {
     super.initState();
+
+    widget.player.onPlayerStateChanged.listen((event) {
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget.player.dispose();
   }
 
   Future<DeviceFileSource> get source async =>
       DeviceFileSource(await _storageService.getSoundFilePath(widget.sound));
 
-  ensureListener() {
-    if (_addedListener == false) {
-      _addedListener = true;
-      widget.player.onPlayerStateChanged.listen((event) {
-        setState(() {});
-      });
-    }
-  }
+  ensureListener() {}
 
   Future playSingle() async {
     ensureListener();
