@@ -100,8 +100,8 @@ class _SoundTileState extends State<SoundTile> {
                 child: IconButton(
                   onPressed: playLoop,
                   icon: widget.player.releaseMode == ReleaseMode.loop
-                      ? const Icon(Icons.pause)
-                      : const Icon(Icons.loop),
+                      ? const Icon(Icons.repeat_one)
+                      : const Icon(Icons.repeat_outlined),
                 ),
               ),
             ),
