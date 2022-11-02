@@ -47,16 +47,6 @@ class _SoundTileState extends State<SoundTile> {
     await widget.player.play(await source);
   }
 
-  Future playLoop() async {
-    if (widget.player.releaseMode == ReleaseMode.loop) {
-      widget.player.setReleaseMode(ReleaseMode.release);
-      await widget.player.release();
-      return;
-    }
-    await widget.player.setReleaseMode(ReleaseMode.loop);
-    await widget.player.play(await source);
-  }
-
   Future setLoop() async {
     setState(() {
       widget.player.setReleaseMode(ReleaseMode.loop);
@@ -65,7 +55,7 @@ class _SoundTileState extends State<SoundTile> {
 
   Future setSingle() async {
     setState(() {
-      widget.player.setReleaseMode(ReleaseMode.release);
+      widget.player.setReleaseMode(ReleaseMode.stop);
     });
   }
 
@@ -102,7 +92,7 @@ class _SoundTileState extends State<SoundTile> {
             Positioned(
               bottom: 15,
               right: 15,
-              child: widget.player.releaseMode == ReleaseMode.release
+              child: widget.player.releaseMode == ReleaseMode.stop
                   ? Tooltip(
                       message: 'Switch to loop mode',
                       child: IconButton(

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
@@ -52,11 +54,11 @@ class _MainSectionState extends State<MainSection> {
   }
 
   void deleteSound(Sound sound) async {
-    _players[sound.id]?.release();
+    await _players[sound.id]?.stop();
     setState(() {
-      widget.sounds.remove(sound);
+      widget.sounds.removeWhere((element) => element.id == sound.id);
+      _players.remove(sound.id);
     });
-    _players.remove(sound.id);
     await _storageService.removeSound(sound);
     await _storageService.saveSounds(widget.sounds);
   }
