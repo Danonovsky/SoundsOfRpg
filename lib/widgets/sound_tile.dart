@@ -39,20 +39,15 @@ class _SoundTileState extends State<SoundTile> {
   Future<DeviceFileSource> get source async =>
       DeviceFileSource(await _storageService.getSoundFilePath(widget.sound));
 
-  ensureListener() {}
-
   Future playSingle() async {
-    ensureListener();
     if (widget.player.state == PlayerState.playing) {
-      await widget.player.setReleaseMode(ReleaseMode.release);
-      await widget.player.release();
+      await widget.player.stop();
       return;
     }
     await widget.player.play(await source);
   }
 
   Future playLoop() async {
-    ensureListener();
     if (widget.player.releaseMode == ReleaseMode.loop) {
       widget.player.setReleaseMode(ReleaseMode.release);
       await widget.player.release();
@@ -60,6 +55,18 @@ class _SoundTileState extends State<SoundTile> {
     }
     await widget.player.setReleaseMode(ReleaseMode.loop);
     await widget.player.play(await source);
+  }
+
+  Future setLoop() async {
+    setState(() {
+      widget.player.setReleaseMode(ReleaseMode.loop);
+    });
+  }
+
+  Future setSingle() async {
+    setState(() {
+      widget.player.setReleaseMode(ReleaseMode.release);
+    });
   }
 
   @override
@@ -83,7 +90,7 @@ class _SoundTileState extends State<SoundTile> {
               bottom: 15,
               left: 15,
               child: Tooltip(
-                message: 'Play single',
+                message: 'Play',
                 child: IconButton(
                   onPressed: playSingle,
                   icon: widget.player.state == PlayerState.playing
@@ -95,15 +102,20 @@ class _SoundTileState extends State<SoundTile> {
             Positioned(
               bottom: 15,
               right: 15,
-              child: Tooltip(
-                message: 'Play in loop',
-                child: IconButton(
-                  onPressed: playLoop,
-                  icon: widget.player.releaseMode == ReleaseMode.loop
-                      ? const Icon(Icons.repeat_one)
-                      : const Icon(Icons.repeat_outlined),
-                ),
-              ),
+              child: widget.player.releaseMode == ReleaseMode.release
+                  ? Tooltip(
+                      message: 'Switch to loop mode',
+                      child: IconButton(
+                          onPressed: setLoop,
+                          icon: const Icon(Icons.repeat_one)),
+                    )
+                  : Tooltip(
+                      message: 'Switch to single mode',
+                      child: IconButton(
+                        onPressed: setSingle,
+                        icon: const Icon(Icons.repeat_outlined),
+                      ),
+                    ),
             ),
             Positioned(
               top: 15,
