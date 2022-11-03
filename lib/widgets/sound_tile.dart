@@ -4,7 +4,7 @@ import 'package:sounds_of_rpg/entities/sound.dart';
 import 'package:sounds_of_rpg/services/storage_service.dart';
 
 class SoundTile extends StatefulWidget {
-  SoundTile({
+  const SoundTile({
     super.key,
     required this.sound,
     required this.player,
@@ -23,7 +23,6 @@ class _SoundTileState extends State<SoundTile> {
   @override
   void initState() {
     super.initState();
-
     widget.player.onPlayerStateChanged.listen((event) {
       if (mounted) {
         setState(() {});

@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:ui';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +9,9 @@ import 'package:sounds_of_rpg/widgets/add_sound_dialog.dart';
 import 'package:sounds_of_rpg/widgets/sound_tile.dart';
 
 class MainSection extends StatefulWidget {
-  const MainSection(
-      {Key? key, required this.sounds, required this.selectedCategory})
+  MainSection({Key? key, required this.sounds, required this.selectedCategory})
       : super(key: key);
-  final List<Sound> sounds;
+  List<Sound> sounds;
   final Category? selectedCategory;
 
   @override
@@ -22,6 +21,10 @@ class MainSection extends StatefulWidget {
 class _MainSectionState extends State<MainSection> {
   final StorageService _storageService = StorageService();
   final Map<String, AudioPlayer> _players = {};
+  List<Sound> get soundsToDisplay => widget.sounds.where((element) {
+        if (widget.selectedCategory == null) return true;
+        return element.categoryId == widget.selectedCategory!.id;
+      }).toList();
 
   @override
   void initState() {
@@ -91,7 +94,20 @@ class _MainSectionState extends State<MainSection> {
               ),
             ),
             Expanded(
-              child: GridView.count(
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 5,
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  var sound = soundsToDisplay[index];
+                  return SoundTile(
+                      sound: sound,
+                      player: getPlayer(sound),
+                      onDelete: () => deleteSound(sound));
+                },
+                itemCount: soundsToDisplay.length,
+              ),
+              /*child: GridView.count(
                 crossAxisCount: 5,
                 children: widget.sounds
                     .where(
@@ -109,7 +125,7 @@ class _MainSectionState extends State<MainSection> {
                       ),
                     )
                     .toList(),
-              ),
+              ),*/
             ),
           ],
         ),
