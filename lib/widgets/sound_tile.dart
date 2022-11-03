@@ -91,19 +91,19 @@ class _SoundTileState extends State<SoundTile> {
             Positioned(
               bottom: 15,
               right: 15,
-              child: widget.player.releaseMode == ReleaseMode.stop
+              child: widget.player.releaseMode == ReleaseMode.loop
                   ? Tooltip(
-                      message: 'Switch to loop mode',
-                      child: IconButton(
-                          onPressed: setLoop,
-                          icon: const Icon(Icons.repeat_one)),
-                    )
-                  : Tooltip(
                       message: 'Switch to single mode',
                       child: IconButton(
                         onPressed: setSingle,
                         icon: const Icon(Icons.repeat_outlined),
                       ),
+                    )
+                  : Tooltip(
+                      message: 'Switch to loop mode',
+                      child: IconButton(
+                          onPressed: setLoop,
+                          icon: const Icon(Icons.repeat_one)),
                     ),
             ),
             Positioned(
