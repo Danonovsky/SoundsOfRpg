@@ -28,7 +28,6 @@ class _SoundTileState extends State<SoundTile> {
   @override
   void initState() {
     super.initState();
-    print('init');
     if (_subscription != null) return;
     _subscription = widget.player.onPlayerStateChanged.listen((event) {
       print(event.name);

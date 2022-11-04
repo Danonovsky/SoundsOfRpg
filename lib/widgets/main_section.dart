@@ -100,10 +100,11 @@ class _MainSectionState extends State<MainSection> {
                 ),
                 itemBuilder: (BuildContext context, int index) {
                   var sound = soundsToDisplay[index];
-                  return SoundTile(
+                  var tile = SoundTile(
                       sound: sound,
                       player: getPlayer(sound),
                       onDelete: () => deleteSound(sound));
+                  return tile;
                 },
                 itemCount: soundsToDisplay.length,
               ),
