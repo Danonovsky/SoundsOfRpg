@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sounds_of_rpg/entities/sound.dart';
@@ -22,11 +24,14 @@ class SoundTile extends StatefulWidget {
 
 class _SoundTileState extends State<SoundTile> {
   final StorageService _storageService = StorageService();
+  StreamSubscription<PlayerState>? _subscription;
   @override
   void initState() {
     super.initState();
     print('init');
-    widget.player.onPlayerStateChanged.listen((event) {
+    if (_subscription != null) return;
+    _subscription = widget.player.onPlayerStateChanged.listen((event) {
+      print(event.name);
       if (mounted) {
         setState(() {});
       }
@@ -36,6 +41,7 @@ class _SoundTileState extends State<SoundTile> {
   @override
   void dispose() {
     super.dispose();
+    _subscription?.cancel();
   }
 
   Future<DeviceFileSource> get source async =>
