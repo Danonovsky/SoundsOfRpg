@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
@@ -40,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   bool _useLightMode = true;
   late SharedPreferences prefs;
+  IconData _saveIcon = Icons.save;
 
   _MyHomePageState() {
     SharedPreferences.getInstance().then((value) {
@@ -74,6 +77,19 @@ class _MyHomePageState extends State<MyHomePage> {
       _selectedIndex = index;
       _selectedCategory =
           _selectedIndex < 2 ? null : _categories[_selectedIndex - 2];
+    });
+  }
+
+  save() async {
+    await _storageService.saveCategories(_categories);
+    await _storageService.saveSounds(_sounds);
+    setState(() {
+      _saveIcon = Icons.save_as;
+    });
+    Timer(const Duration(milliseconds: 500), () {
+      setState(() {
+        _saveIcon = Icons.save;
+      });
     });
   }
 
@@ -120,6 +136,11 @@ class _MyHomePageState extends State<MyHomePage> {
             IconButtonWithPadding(
               click: updateLightMode,
               icon: Icon(_useLightMode ? Icons.dark_mode : Icons.light_mode),
+              padding: const EdgeInsets.only(right: 15),
+            ),
+            IconButtonWithPadding(
+              click: save,
+              icon: Icon(_saveIcon),
               padding: const EdgeInsets.only(right: 15),
             ),
           ],
