@@ -6,14 +6,12 @@ import 'package:sounds_of_rpg/entities/sound.dart';
 import 'package:sounds_of_rpg/services/storage_service.dart';
 
 class SoundTile extends StatefulWidget {
-  SoundTile({
+  const SoundTile({
     super.key,
     required this.sound,
     required this.player,
     required this.onDelete,
-  }) {
-    print('constructor');
-  }
+  });
   final Sound sound;
   final AudioPlayer player;
   final void Function() onDelete;
@@ -28,7 +26,6 @@ class _SoundTileState extends State<SoundTile> {
   @override
   void initState() {
     super.initState();
-    print('init');
     if (_subscription != null) return;
     ensureSubscribed();
   }
@@ -36,8 +33,7 @@ class _SoundTileState extends State<SoundTile> {
   @override
   void dispose() {
     super.dispose();
-    print('dispose');
-    _subscription?.pause();
+    _subscription?.cancel();
   }
 
   Future<DeviceFileSource> get source async =>
@@ -46,7 +42,6 @@ class _SoundTileState extends State<SoundTile> {
   ensureSubscribed() {
     _subscription?.cancel();
     _subscription = widget.player.onPlayerStateChanged.listen((event) {
-      print('playerStateChanged');
       if (mounted) {
         setState(() {});
       }
@@ -136,6 +131,25 @@ class _SoundTileState extends State<SoundTile> {
                 child: IconButton(
                   onPressed: widget.onDelete,
                   icon: const Icon(Icons.delete),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 15,
+              child: RotatedBox(
+                quarterTurns: -1,
+                child: Slider(
+                  label: widget.sound.volume.toStringAsFixed(0),
+                  divisions: 100,
+                  max: 100,
+                  min: 0,
+                  value: widget.sound.volume,
+                  onChanged: (value) {
+                    setState(() {
+                      widget.sound.volume = value;
+                      widget.player.setVolume(widget.sound.volume / 100);
+                    });
+                  },
                 ),
               ),
             ),
