@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sounds_of_rpg/entities/sound.dart';
 import 'package:sounds_of_rpg/services/storage_service.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class SoundTile extends StatefulWidget {
   const SoundTile({
@@ -23,6 +24,7 @@ class SoundTile extends StatefulWidget {
 class _SoundTileState extends State<SoundTile> {
   final StorageService _storageService = StorageService();
   StreamSubscription<PlayerState>? _subscription;
+  bool _soundBarVisible = false;
   @override
   void initState() {
     super.initState();
@@ -77,7 +79,7 @@ class _SoundTileState extends State<SoundTile> {
           children: [
             Center(
               child: Tooltip(
-                message: '${widget.sound.name}',
+                message: widget.sound.name,
                 preferBelow: false,
                 child: Icon(
                   IconData(
@@ -135,14 +137,28 @@ class _SoundTileState extends State<SoundTile> {
               ),
             ),
             Positioned(
-              left: 15,
-              child: RotatedBox(
-                quarterTurns: -1,
-                child: Slider(
-                  label: widget.sound.volume.toStringAsFixed(0),
-                  divisions: 100,
+              bottom: 15,
+              right: 15,
+              child: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _soundBarVisible = !_soundBarVisible;
+                  });
+                },
+                icon: const Icon(Icons.volume_down),
+              ),
+            ),
+            Positioned(
+              right: 10,
+              bottom: 45,
+              top: 45,
+              child: Visibility(
+                visible: _soundBarVisible,
+                child: SfSlider.vertical(
                   max: 100,
                   min: 0,
+                  interval: 10,
+                  showDividers: true,
                   value: widget.sound.volume,
                   onChanged: (value) {
                     setState(() {
