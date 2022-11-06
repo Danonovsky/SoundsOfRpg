@@ -55,7 +55,13 @@ class _MainSectionState extends State<MainSection> {
   }
 
   void deleteSound(Sound sound) async {
-    await _players[sound.id]?.stop();
+    if (_players.entries
+        .any((element) => element.value.state == PlayerState.playing)) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Can't delete if any sound playing")));
+      return;
+    }
     setState(() {
       widget.sounds.removeWhere((element) => element.id == sound.id);
       _players.remove(sound.id);

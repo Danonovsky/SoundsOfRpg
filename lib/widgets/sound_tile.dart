@@ -63,12 +63,14 @@ class _SoundTileState extends State<SoundTile> {
   }
 
   Future setLoop() async {
+    ensureSubscribed();
     setState(() {
       widget.player.setReleaseMode(ReleaseMode.loop);
     });
   }
 
   Future setSingle() async {
+    ensureSubscribed();
     setState(() {
       widget.player.setReleaseMode(ReleaseMode.stop);
     });
