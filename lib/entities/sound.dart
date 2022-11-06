@@ -5,14 +5,16 @@ class Sound {
   final String extension;
   final int iconCode;
   final String iconFontFamily;
+  double volume;
 
-  const Sound(
+  Sound(
       {required this.id,
       required this.categoryId,
       required this.name,
       required this.extension,
       required this.iconCode,
-      required this.iconFontFamily});
+      required this.iconFontFamily,
+      required this.volume});
 
   Sound.fromJson(Map json)
       : id = json['id'],
@@ -20,7 +22,8 @@ class Sound {
         name = json['name'],
         extension = json['extension'],
         iconCode = json['iconCode'],
-        iconFontFamily = json['iconFontFamily'];
+        iconFontFamily = json['iconFontFamily'],
+        volume = json['volume'];
 
   Map toJson() => {
         'id': id,
@@ -29,6 +32,7 @@ class Sound {
         'extension': extension,
         'iconCode': iconCode,
         'iconFontFamily': iconFontFamily,
+        'volume': volume
       };
 }
 

@@ -53,7 +53,7 @@ class _SoundTileState extends State<SoundTile> {
     });
   }
 
-  Future playSingle() async {
+  Future play() async {
     ensureSubscribed();
     if (widget.player.state == PlayerState.playing) {
       await widget.player.stop();
@@ -82,7 +82,7 @@ class _SoundTileState extends State<SoundTile> {
           children: [
             Center(
               child: Tooltip(
-                message: widget.sound.name,
+                message: '${widget.sound.name}',
                 preferBelow: false,
                 child: Icon(
                   IconData(
@@ -93,22 +93,26 @@ class _SoundTileState extends State<SoundTile> {
                 ),
               ),
             ),
-            Positioned(
+            Positioned.fill(
               bottom: 15,
-              left: 15,
-              child: Tooltip(
-                message: 'Play',
-                child: IconButton(
-                  onPressed: playSingle,
-                  icon: widget.player.state == PlayerState.playing
-                      ? const Icon(Icons.stop)
-                      : const Icon(Icons.play_arrow),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Tooltip(
+                  message: widget.player.state == PlayerState.playing
+                      ? 'Stop'
+                      : 'Play',
+                  child: IconButton(
+                    onPressed: play,
+                    icon: widget.player.state == PlayerState.playing
+                        ? const Icon(Icons.stop)
+                        : const Icon(Icons.play_arrow),
+                  ),
                 ),
               ),
             ),
             Positioned(
               bottom: 15,
-              right: 15,
+              left: 15,
               child: widget.player.releaseMode == ReleaseMode.loop
                   ? Tooltip(
                       message: 'Switch to single mode',
