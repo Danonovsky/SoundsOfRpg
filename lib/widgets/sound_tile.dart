@@ -28,25 +28,33 @@ class _SoundTileState extends State<SoundTile> {
   @override
   void initState() {
     super.initState();
+    print('init');
     if (_subscription != null) return;
+    ensureSubscribed();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print('dispose');
+    _subscription?.pause();
+  }
+
+  Future<DeviceFileSource> get source async =>
+      DeviceFileSource(await _storageService.getSoundFilePath(widget.sound));
+
+  ensureSubscribed() {
+    _subscription?.cancel();
     _subscription = widget.player.onPlayerStateChanged.listen((event) {
-      print(event.name);
+      print('playerStateChanged');
       if (mounted) {
         setState(() {});
       }
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _subscription?.cancel();
-  }
-
-  Future<DeviceFileSource> get source async =>
-      DeviceFileSource(await _storageService.getSoundFilePath(widget.sound));
-
   Future playSingle() async {
+    ensureSubscribed();
     if (widget.player.state == PlayerState.playing) {
       await widget.player.stop();
       return;
