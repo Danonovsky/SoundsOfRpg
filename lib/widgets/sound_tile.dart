@@ -24,9 +24,8 @@ class SoundTile extends StatefulWidget {
 class _SoundTileState extends State<SoundTile> {
   final StorageService _storageService = StorageService();
   StreamSubscription<PlayerState>? _subscription;
-  double start = 0;
-  double end = 60;
-  late RangeValues _values = RangeValues(start, end);
+  late RangeValues _values =
+      RangeValues(widget.sound.minTime, widget.sound.maxTime);
   @override
   void initState() {
     super.initState();
@@ -73,6 +72,80 @@ class _SoundTileState extends State<SoundTile> {
     setState(() {
       widget.player.setReleaseMode(ReleaseMode.stop);
     });
+  }
+
+  showModal() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setModalState) {
+            return Padding(
+              padding: const EdgeInsets.only(
+                  bottom: 15, top: 15, left: 100, right: 100),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Settings',
+                    style: TextStyle(fontSize: 22),
+                  ),
+                  Row(
+                    children: [
+                      const Text('Volume'),
+                      Slider(
+                        max: 100,
+                        min: 0,
+                        divisions: 100,
+                        value: widget.sound.volume,
+                        label: widget.sound.volume.toStringAsFixed(0),
+                        onChanged: (value) {
+                          setModalState(() {
+                            widget.sound.volume = value;
+                            widget.player.setVolume(widget.sound.volume / 100);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: widget.sound.delayMode,
+                        onChanged: (value) {
+                          if (value == null) return;
+                          setModalState(() {
+                            widget.sound.delayMode = value;
+                          });
+                        },
+                      ),
+                      const Text('Delay Mode'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Text('Delay'),
+                      RangeSlider(
+                          min: 0,
+                          max: 60,
+                          divisions: 60,
+                          labels: RangeLabels(_values.start.toStringAsFixed(0),
+                              _values.end.toStringAsFixed(0)),
+                          values: _values,
+                          onChanged: (values) {
+                            setModalState(() {
+                              _values = values;
+                              widget.sound.minTime = values.start;
+                              widget.sound.maxTime = values.end;
+                            });
+                          }),
+                    ],
+                  )
+                ],
+              ),
+            );
+          });
+        });
   }
 
   @override
@@ -145,49 +218,7 @@ class _SoundTileState extends State<SoundTile> {
                 message: 'Edit',
                 child: IconButton(
                   icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return StatefulBuilder(builder: (BuildContext context,
-                              StateSetter setModalState) {
-                            return Container(
-                                height: 200,
-                                child: Column(
-                                  children: [
-                                    Slider(
-                                      max: 100,
-                                      min: 0,
-                                      divisions: 100,
-                                      value: widget.sound.volume,
-                                      label: widget.sound.volume
-                                          .toStringAsFixed(0),
-                                      onChanged: (value) {
-                                        setModalState(() {
-                                          widget.sound.volume = value;
-                                          widget.player.setVolume(
-                                              widget.sound.volume / 100);
-                                        });
-                                      },
-                                    ),
-                                    RangeSlider(
-                                        min: 0,
-                                        max: 60,
-                                        divisions: 60,
-                                        labels: RangeLabels(
-                                            _values.start.toStringAsFixed(0),
-                                            _values.end.toStringAsFixed(0)),
-                                        values: _values,
-                                        onChanged: (values) {
-                                          setModalState(() {
-                                            _values = values;
-                                          });
-                                        })
-                                  ],
-                                ));
-                          });
-                        });
-                  },
+                  onPressed: showModal,
                 ),
               ),
             ),

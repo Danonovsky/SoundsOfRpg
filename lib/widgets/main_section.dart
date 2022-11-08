@@ -50,6 +50,9 @@ class _MainSectionState extends State<MainSection> {
         name: sound.name,
         extension: '',
         volume: 100,
+        minTime: 0,
+        maxTime: 60,
+        delayMode: false,
       ));
     });
     await _storageService.saveSounds(widget.sounds);
