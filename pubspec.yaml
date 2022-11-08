@@ -22,7 +22,6 @@ dependencies:
   file_picker:
   path_provider:
   audioplayers:
-  syncfusion_flutter_sliders:
 
 dev_dependencies:
   flutter_test:

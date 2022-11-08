@@ -4,7 +4,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sounds_of_rpg/entities/sound.dart';
 import 'package:sounds_of_rpg/services/storage_service.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class SoundTile extends StatefulWidget {
   const SoundTile({
