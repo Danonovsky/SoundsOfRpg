@@ -51,16 +51,13 @@ class _SoundTileState extends State<SoundTile> {
       isActive = false;
       if (loopMode) {
         isActive = true;
-        print('loop');
         if (widget.sound.delayMode) {
-          var timeToWait = Random().nextDouble() *
-                  (widget.sound.maxTime - widget.sound.minTime) +
-              widget.sound.minTime;
-          print('time to wait: $timeToWait');
-          await Future.delayed(Duration(seconds: timeToWait.toInt()));
+          var timeToWait = Random().nextInt(
+                  widget.sound.maxTime.toInt() - widget.sound.minTime.toInt()) +
+              widget.sound.minTime.toInt();
+          await Future.delayed(Duration(seconds: timeToWait));
         }
         if (isActive) {
-          print('xdd');
           await start();
         }
       }
