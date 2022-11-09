@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +23,12 @@ class SoundTile extends StatefulWidget {
 
 class _SoundTileState extends State<SoundTile> {
   final StorageService _storageService = StorageService();
-  StreamSubscription<PlayerState>? _subscription;
+  StreamSubscription? _subscription;
   late RangeValues _values =
       RangeValues(widget.sound.minTime, widget.sound.maxTime);
+  bool loopMode = false;
+  bool isActive = false;
+
   @override
   void initState() {
     super.initState();
@@ -43,7 +47,23 @@ class _SoundTileState extends State<SoundTile> {
 
   ensureSubscribed() {
     _subscription?.cancel();
-    _subscription = widget.player.onPlayerStateChanged.listen((event) {
+    _subscription = widget.player.onPlayerComplete.listen((event) async {
+      isActive = false;
+      if (loopMode) {
+        isActive = true;
+        print('loop');
+        if (widget.sound.delayMode) {
+          var timeToWait = Random().nextDouble() *
+                  (widget.sound.maxTime - widget.sound.minTime) +
+              widget.sound.minTime;
+          print('time to wait: $timeToWait');
+          await Future.delayed(Duration(seconds: timeToWait.toInt()));
+        }
+        if (isActive) {
+          print('xdd');
+          await start();
+        }
+      }
       if (mounted) {
         setState(() {});
       }
@@ -52,24 +72,32 @@ class _SoundTileState extends State<SoundTile> {
 
   Future play() async {
     ensureSubscribed();
-    if (widget.player.state == PlayerState.playing) {
+    if (isActive) {
       await widget.player.stop();
+      isActive = false;
+      setState(() {});
       return;
     }
+    await start();
+    isActive = true;
+    setState(() {});
+  }
+
+  Future start() async {
     await widget.player.play(await source);
   }
 
   Future setLoop() async {
     ensureSubscribed();
     setState(() {
-      widget.player.setReleaseMode(ReleaseMode.loop);
+      loopMode = true;
     });
   }
 
   Future setSingle() async {
     ensureSubscribed();
     setState(() {
-      widget.player.setReleaseMode(ReleaseMode.stop);
+      loopMode = false;
     });
   }
 
@@ -169,12 +197,10 @@ class _SoundTileState extends State<SoundTile> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Tooltip(
-                  message: widget.player.state == PlayerState.playing
-                      ? 'Stop'
-                      : 'Play',
+                  message: isActive ? 'Stop' : 'Play',
                   child: IconButton(
                     onPressed: play,
-                    icon: widget.player.state == PlayerState.playing
+                    icon: isActive
                         ? const Icon(Icons.stop)
                         : const Icon(Icons.play_arrow),
                   ),
@@ -184,7 +210,7 @@ class _SoundTileState extends State<SoundTile> {
             Positioned(
               bottom: 15,
               left: 15,
-              child: widget.player.releaseMode == ReleaseMode.loop
+              child: loopMode
                   ? Tooltip(
                       message: 'Switch to single mode',
                       child: IconButton(
