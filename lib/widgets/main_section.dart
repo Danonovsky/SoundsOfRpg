@@ -7,9 +7,10 @@ import 'package:sounds_of_rpg/widgets/add_sound_dialog.dart';
 import 'package:sounds_of_rpg/widgets/sound_tile.dart';
 
 class MainSection extends StatefulWidget {
-  MainSection({Key? key, required this.sounds, required this.selectedCategory})
+  const MainSection(
+      {Key? key, required this.sounds, required this.selectedCategory})
       : super(key: key);
-  List<Sound> sounds;
+  final List<Sound> sounds;
   final Category? selectedCategory;
 
   @override
@@ -116,25 +117,6 @@ class _MainSectionState extends State<MainSection> {
                 },
                 itemCount: soundsToDisplay.length,
               ),
-              /*child: GridView.count(
-                crossAxisCount: 5,
-                children: widget.sounds
-                    .where(
-                      (element) {
-                        if (widget.selectedCategory == null) return true;
-                        return element.categoryId ==
-                            widget.selectedCategory!.id;
-                      },
-                    )
-                    .map(
-                      (e) => SoundTile(
-                        sound: e,
-                        player: getPlayer(e),
-                        onDelete: () => deleteSound(e),
-                      ),
-                    )
-                    .toList(),
-              ),*/
             ),
           ],
         ),
