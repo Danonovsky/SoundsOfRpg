@@ -59,8 +59,8 @@ class _SoundTileState extends State<SoundTile> {
           var timeToWait = Random().nextInt(
                   widget.sound.maxTime.toInt() - widget.sound.minTime.toInt()) +
               widget.sound.minTime.toInt();
-          var period = Duration(milliseconds: (timeToWait / 20 * 1000).toInt());
-          await Timer.periodic(period, (timer) {
+          var period = Duration(milliseconds: (timeToWait * 10).toInt());
+          Timer.periodic(period, (timer) {
             if (_height == 0) {
               setState(() {
                 timer.cancel();
@@ -68,7 +68,7 @@ class _SoundTileState extends State<SoundTile> {
               return;
             }
             setState(() {
-              _height -= 5;
+              _height--;
             });
           });
           await Future.delayed(Duration(seconds: timeToWait));
@@ -199,7 +199,12 @@ class _SoundTileState extends State<SoundTile> {
               heightFactor: _height / 100,
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                  borderRadius: _height == 100
+                      ? const BorderRadius.all(Radius.circular(12))
+                      : const BorderRadius.only(
+                          bottomRight: Radius.circular(12),
+                          bottomLeft: Radius.circular(12),
+                        ),
                   color: Theme.of(context).disabledColor,
                 ),
               ),
@@ -246,8 +251,9 @@ class _SoundTileState extends State<SoundTile> {
                   : Tooltip(
                       message: 'Switch to loop mode',
                       child: IconButton(
-                          onPressed: setLoop,
-                          icon: const Icon(Icons.repeat_one)),
+                        onPressed: setLoop,
+                        icon: const Icon(Icons.repeat_one),
+                      ),
                     ),
             ),
             Positioned(
