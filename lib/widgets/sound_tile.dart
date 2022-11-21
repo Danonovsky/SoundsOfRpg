@@ -69,15 +69,15 @@ class _SoundTileState extends State<SoundTile> {
               });
               return;
             }
-            setState(() {
-              _height--;
-            });
+            if (mounted) {
+              setState(() {
+                _height--;
+              });
+            }
           });
           await Future.delayed(Duration(seconds: timeToWait));
         }
         if (isActive && lastPlayCount == _playCount) {
-          print('Last playCount: $lastPlayCount');
-          print('Current playCount: $_playCount');
           await start();
         }
       }
