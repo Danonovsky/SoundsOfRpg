@@ -24,10 +24,12 @@ class SoundTile extends StatefulWidget {
 class _SoundTileState extends State<SoundTile> {
   final StorageService _storageService = StorageService();
   StreamSubscription? _subscription;
+  StreamSubscription? _durationSubscription;
   late RangeValues _values =
       RangeValues(widget.sound.minTime, widget.sound.maxTime);
   bool loopMode = false;
   bool isActive = false;
+  int _height = 0;
 
   @override
   void initState() {
@@ -47,14 +49,28 @@ class _SoundTileState extends State<SoundTile> {
 
   ensureSubscribed() {
     _subscription?.cancel();
+    _durationSubscription?.cancel();
     _subscription = widget.player.onPlayerComplete.listen((event) async {
       isActive = false;
       if (loopMode) {
         isActive = true;
         if (widget.sound.delayMode) {
+          _height = 100;
           var timeToWait = Random().nextInt(
                   widget.sound.maxTime.toInt() - widget.sound.minTime.toInt()) +
               widget.sound.minTime.toInt();
+          var period = Duration(milliseconds: (timeToWait / 20 * 1000).toInt());
+          await Timer.periodic(period, (timer) {
+            if (_height == 0) {
+              setState(() {
+                timer.cancel();
+              });
+              return;
+            }
+            setState(() {
+              _height -= 5;
+            });
+          });
           await Future.delayed(Duration(seconds: timeToWait));
         }
         if (isActive) {
@@ -71,8 +87,10 @@ class _SoundTileState extends State<SoundTile> {
     ensureSubscribed();
     if (isActive) {
       await widget.player.stop();
-      isActive = false;
-      setState(() {});
+      setState(() {
+        isActive = false;
+        _height = 0;
+      });
       return;
     }
     await start();
@@ -175,7 +193,17 @@ class _SoundTileState extends State<SoundTile> {
   @override
   Widget build(BuildContext context) => Card(
         child: Stack(
+          alignment: Alignment.bottomCenter,
           children: [
+            FractionallySizedBox(
+              heightFactor: _height / 100,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                  color: Theme.of(context).disabledColor,
+                ),
+              ),
+            ),
             Center(
               child: Tooltip(
                 message: widget.sound.name,
@@ -243,6 +271,11 @@ class _SoundTileState extends State<SoundTile> {
                   onPressed: showModal,
                 ),
               ),
+            ),
+            Positioned(
+              top: 15,
+              left: 15,
+              child: Text('$_height'),
             ),
           ],
         ),
