@@ -30,6 +30,7 @@ class _SoundTileState extends State<SoundTile> {
   bool loopMode = false;
   bool isActive = false;
   int _height = 0;
+  int _playCount = 0;
 
   @override
   void initState() {
@@ -52,6 +53,7 @@ class _SoundTileState extends State<SoundTile> {
     _durationSubscription?.cancel();
     _subscription = widget.player.onPlayerComplete.listen((event) async {
       isActive = false;
+      var lastPlayCount = _playCount;
       if (loopMode) {
         isActive = true;
         if (widget.sound.delayMode) {
@@ -73,7 +75,9 @@ class _SoundTileState extends State<SoundTile> {
           });
           await Future.delayed(Duration(seconds: timeToWait));
         }
-        if (isActive) {
+        if (isActive && lastPlayCount == _playCount) {
+          print('Last playCount: $lastPlayCount');
+          print('Current playCount: $_playCount');
           await start();
         }
       }
@@ -99,6 +103,7 @@ class _SoundTileState extends State<SoundTile> {
   }
 
   Future start() async {
+    _playCount++;
     await widget.player.play(await source);
   }
 
