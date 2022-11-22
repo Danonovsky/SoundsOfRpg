@@ -9,6 +9,7 @@ class Sound {
   bool delayMode;
   double minTime;
   double maxTime;
+  bool loopMode;
 
   Sound({
     required this.id,
@@ -21,6 +22,7 @@ class Sound {
     required this.delayMode,
     required this.minTime,
     required this.maxTime,
+    required this.loopMode,
   });
 
   Sound.fromJson(Map json)
@@ -30,10 +32,11 @@ class Sound {
         extension = json['extension'],
         iconCode = json['iconCode'],
         iconFontFamily = json['iconFontFamily'],
-        volume = json['volume'],
-        delayMode = json['delayMode'],
-        minTime = json['minTime'],
-        maxTime = json['maxTime'];
+        volume = json['volume'] ?? 50,
+        delayMode = json['delayMode'] ?? false,
+        minTime = json['minTime'] ?? 0,
+        maxTime = json['maxTime'] ?? 60,
+        loopMode = json['loopMode'] ?? false;
 
   Map toJson() => {
         'id': id,
@@ -46,6 +49,7 @@ class Sound {
         'delayMode': delayMode,
         'minTime': minTime,
         'maxTime': maxTime,
+        'loopMode': loopMode
       };
 }
 

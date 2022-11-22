@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sounds_of_rpg/entities/category.dart';
 import 'package:sounds_of_rpg/entities/sound.dart';
+import 'package:sounds_of_rpg/models/my_player.dart';
 import 'package:sounds_of_rpg/services/storage_service.dart';
 import 'package:sounds_of_rpg/widgets/add_sound_dialog.dart';
 import 'package:sounds_of_rpg/widgets/sound_tile.dart';
@@ -20,6 +23,7 @@ class MainSection extends StatefulWidget {
 class _MainSectionState extends State<MainSection> {
   final StorageService _storageService = StorageService();
   final Map<String, AudioPlayer> _players = {};
+  final Map<String, MyPlayer> players = {};
   List<Sound> get soundsToDisplay => widget.sounds.where((element) {
         if (widget.selectedCategory == null) return true;
         return element.categoryId == widget.selectedCategory!.id;
@@ -30,6 +34,32 @@ class _MainSectionState extends State<MainSection> {
     super.initState();
     for (var sound in widget.sounds) {
       _players[sound.id] = AudioPlayer(playerId: sound.id);
+      players[sound.id] = MyPlayer(
+        player: AudioPlayer(playerId: sound.id),
+        sound: sound,
+        updateTimer: updateTimer,
+        updateState: updateState,
+      );
+    }
+  }
+
+  updateTimer(Timer timer, int height) {
+    if (height == 0) {
+      setState(() {
+        timer.cancel();
+      });
+      return;
+    }
+    if (mounted) {
+      setState(() {
+        height--;
+      });
+    }
+  }
+
+  updateState() {
+    if (mounted) {
+      setState(() {});
     }
   }
 
@@ -54,6 +84,7 @@ class _MainSectionState extends State<MainSection> {
         minTime: 0,
         maxTime: 60,
         delayMode: false,
+        loopMode: false,
       ));
     });
     await _storageService.saveSounds(widget.sounds);
