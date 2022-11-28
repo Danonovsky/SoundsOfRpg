@@ -1,20 +1,15 @@
 import 'dart:async';
-import 'dart:math';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:sounds_of_rpg/entities/sound.dart';
-import 'package:sounds_of_rpg/services/storage_service.dart';
+import 'package:sounds_of_rpg/models/my_player.dart';
 
 class SoundTile extends StatefulWidget {
   const SoundTile({
     super.key,
-    required this.sound,
     required this.player,
     required this.onDelete,
   });
-  final Sound sound;
-  final AudioPlayer player;
+  final MyPlayer player;
   final void Function() onDelete;
 
   @override
@@ -22,102 +17,33 @@ class SoundTile extends StatefulWidget {
 }
 
 class _SoundTileState extends State<SoundTile> {
-  final StorageService _storageService = StorageService();
-  StreamSubscription? _subscription;
-  StreamSubscription? _durationSubscription;
-  late RangeValues _values =
-      RangeValues(widget.sound.minTime, widget.sound.maxTime);
-  bool loopMode = false;
-  bool isActive = false;
-  int _height = 0;
-  int _playCount = 0;
-
+  MyPlayer get player => widget.player;
   @override
   void initState() {
     super.initState();
-    if (_subscription != null) return;
-    ensureSubscribed();
+    widget.player.ensureSubscribed();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _subscription?.cancel();
-  }
-
-  Future<DeviceFileSource> get source async =>
-      DeviceFileSource(await _storageService.getSoundFilePath(widget.sound));
-
-  ensureSubscribed() {
-    _subscription?.cancel();
-    _durationSubscription?.cancel();
-    _subscription = widget.player.onPlayerComplete.listen((event) async {
-      isActive = false;
-      var lastPlayCount = _playCount;
-      if (loopMode) {
-        isActive = true;
-        if (widget.sound.delayMode) {
-          _height = 100;
-          var timeToWait = Random().nextInt(
-                  widget.sound.maxTime.toInt() - widget.sound.minTime.toInt()) +
-              widget.sound.minTime.toInt();
-          var period = Duration(milliseconds: (timeToWait * 10).toInt());
-          Timer.periodic(period, (timer) {
-            if (_height == 0) {
-              setState(() {
-                timer.cancel();
-              });
-              return;
-            }
-            if (mounted) {
-              setState(() {
-                _height--;
-              });
-            }
-          });
-          await Future.delayed(Duration(seconds: timeToWait));
-        }
-        if (isActive && lastPlayCount == _playCount) {
-          await start();
-        }
-      }
-      if (mounted) {
-        setState(() {});
-      }
-    });
   }
 
   Future play() async {
-    ensureSubscribed();
-    if (isActive) {
-      await widget.player.stop();
-      setState(() {
-        isActive = false;
-        _height = 0;
-      });
-      return;
-    }
-    await start();
-    isActive = true;
-    setState(() {});
-  }
-
-  Future start() async {
-    _playCount++;
-    await widget.player.play(await source);
+    setState(() {
+      player.play();
+    });
   }
 
   Future setLoop() async {
-    ensureSubscribed();
     setState(() {
-      loopMode = true;
+      player.setLoop();
     });
   }
 
   Future setSingle() async {
-    ensureSubscribed();
     setState(() {
-      loopMode = false;
+      player.setSingle();
     });
   }
 
@@ -144,12 +70,12 @@ class _SoundTileState extends State<SoundTile> {
                         max: 100,
                         min: 0,
                         divisions: 100,
-                        value: widget.sound.volume,
-                        label: widget.sound.volume.toStringAsFixed(0),
+                        value: player.sound.volume,
+                        label: player.sound.volume.toStringAsFixed(0),
                         onChanged: (value) {
                           setModalState(() {
-                            widget.sound.volume = value;
-                            widget.player.setVolume(widget.sound.volume / 100);
+                            player.sound.volume = value;
+                            player.player.setVolume(player.sound.volume / 100);
                           });
                         },
                       ),
@@ -158,11 +84,11 @@ class _SoundTileState extends State<SoundTile> {
                   Row(
                     children: [
                       Checkbox(
-                        value: widget.sound.delayMode,
+                        value: player.sound.delayMode,
                         onChanged: (value) {
                           if (value == null) return;
                           setModalState(() {
-                            widget.sound.delayMode = value;
+                            player.sound.delayMode = value;
                           });
                         },
                       ),
@@ -176,14 +102,15 @@ class _SoundTileState extends State<SoundTile> {
                           min: 0,
                           max: 60,
                           divisions: 60,
-                          labels: RangeLabels(_values.start.toStringAsFixed(0),
-                              _values.end.toStringAsFixed(0)),
-                          values: _values,
+                          labels: RangeLabels(
+                              player.values.start.toStringAsFixed(0),
+                              player.values.end.toStringAsFixed(0)),
+                          values: player.values,
                           onChanged: (values) {
                             setModalState(() {
-                              _values = values;
-                              widget.sound.minTime = values.start;
-                              widget.sound.maxTime = values.end;
+                              player.values = values;
+                              player.sound.minTime = values.start;
+                              player.sound.maxTime = values.end;
                             });
                           }),
                     ],
@@ -201,10 +128,10 @@ class _SoundTileState extends State<SoundTile> {
           alignment: Alignment.bottomCenter,
           children: [
             FractionallySizedBox(
-              heightFactor: _height / 100,
+              heightFactor: player.height / 100,
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: _height == 100
+                  borderRadius: player.height == 100
                       ? const BorderRadius.all(Radius.circular(12))
                       : const BorderRadius.only(
                           bottomRight: Radius.circular(12),
@@ -216,12 +143,12 @@ class _SoundTileState extends State<SoundTile> {
             ),
             Center(
               child: Tooltip(
-                message: widget.sound.name,
+                message: player.sound.name,
                 preferBelow: false,
                 child: Icon(
                   IconData(
-                    widget.sound.iconCode,
-                    fontFamily: widget.sound.iconFontFamily,
+                    player.sound.iconCode,
+                    fontFamily: player.sound.iconFontFamily,
                   ),
                   size: 75,
                 ),
@@ -232,10 +159,10 @@ class _SoundTileState extends State<SoundTile> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Tooltip(
-                  message: isActive ? 'Stop' : 'Play',
+                  message: player.isActive ? 'Stop' : 'Play',
                   child: IconButton(
                     onPressed: play,
-                    icon: isActive
+                    icon: player.isActive
                         ? const Icon(Icons.stop)
                         : const Icon(Icons.play_arrow),
                   ),
@@ -245,7 +172,7 @@ class _SoundTileState extends State<SoundTile> {
             Positioned(
               bottom: 15,
               left: 15,
-              child: loopMode
+              child: player.sound.loopMode
                   ? Tooltip(
                       message: 'Switch to single mode',
                       child: IconButton(
@@ -286,7 +213,7 @@ class _SoundTileState extends State<SoundTile> {
             Positioned(
               top: 15,
               left: 15,
-              child: Text('$_height'),
+              child: Text('${player.height}'),
             ),
           ],
         ),

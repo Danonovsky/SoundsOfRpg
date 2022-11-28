@@ -12,12 +12,12 @@ class MyPlayer {
   late AudioPlayer player;
   late Sound sound;
   bool isActive = false;
-  int _height = 0;
-  int _playCount = 0;
+  int height = 0;
+  int playCount = 0;
   final StorageService _storageService = StorageService();
   StreamSubscription? _subscription;
   StreamSubscription? _durationSubscription;
-  late RangeValues _values = RangeValues(sound.minTime, sound.maxTime);
+  late RangeValues values = RangeValues(sound.minTime, sound.maxTime);
   late Function updateTimer;
   late Function updateState;
 
@@ -38,21 +38,21 @@ class MyPlayer {
     _durationSubscription?.cancel();
     _subscription = player.onPlayerComplete.listen((event) async {
       isActive = false;
-      var lastPlayCount = _playCount;
+      var lastPlayCount = playCount;
       if (sound.loopMode) {
         isActive = true;
         if (sound.delayMode) {
-          _height = 100;
+          height = 100;
           var timeToWait =
               Random().nextInt(sound.maxTime.toInt() - sound.minTime.toInt()) +
                   sound.minTime.toInt();
           var period = Duration(milliseconds: (timeToWait * 10).toInt());
           Timer.periodic(period, (timer) {
-            updateTimer(_height, timer);
+            updateTimer(height, timer);
           });
           await Future.delayed(Duration(seconds: timeToWait));
         }
-        if (isActive && lastPlayCount == _playCount) {
+        if (isActive && lastPlayCount == playCount) {
           await start();
         }
       }
@@ -68,7 +68,7 @@ class MyPlayer {
     if (isActive) {
       await player.stop();
       isActive = false;
-      _height = 0;
+      height = 0;
       return;
     }
     await start();
@@ -76,7 +76,7 @@ class MyPlayer {
   }
 
   Future start() async {
-    _playCount++;
+    playCount++;
     await player.play(await source);
   }
 

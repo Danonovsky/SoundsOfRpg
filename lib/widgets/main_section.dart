@@ -22,7 +22,6 @@ class MainSection extends StatefulWidget {
 
 class _MainSectionState extends State<MainSection> {
   final StorageService _storageService = StorageService();
-  final Map<String, AudioPlayer> _players = {};
   final Map<String, MyPlayer> players = {};
   List<Sound> get soundsToDisplay => widget.sounds.where((element) {
         if (widget.selectedCategory == null) return true;
@@ -33,7 +32,6 @@ class _MainSectionState extends State<MainSection> {
   void initState() {
     super.initState();
     for (var sound in widget.sounds) {
-      _players[sound.id] = AudioPlayer(playerId: sound.id);
       players[sound.id] = MyPlayer(
         player: AudioPlayer(playerId: sound.id),
         sound: sound,
@@ -91,8 +89,8 @@ class _MainSectionState extends State<MainSection> {
   }
 
   void deleteSound(Sound sound) async {
-    if (_players.entries
-        .any((element) => element.value.state == PlayerState.playing)) {
+    if (players.entries
+        .any((element) => element.value.player.state == PlayerState.playing)) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Can't delete if any sound playing")));
@@ -100,17 +98,22 @@ class _MainSectionState extends State<MainSection> {
     }
     setState(() {
       widget.sounds.removeWhere((element) => element.id == sound.id);
-      _players.remove(sound.id);
+      players.remove(sound.id);
     });
     await _storageService.removeSound(sound);
     await _storageService.saveSounds(widget.sounds);
   }
 
-  AudioPlayer getPlayer(Sound sound) {
-    if (_players.containsKey(sound.id) == false) {
-      _players[sound.id] = AudioPlayer(playerId: sound.id);
+  MyPlayer getPlayer(Sound sound) {
+    if (players.containsKey(sound.id) == false) {
+      players[sound.id] = MyPlayer(
+        player: AudioPlayer(playerId: sound.id),
+        sound: sound,
+        updateTimer: updateTimer,
+        updateState: updateState,
+      );
     }
-    return _players[sound.id]!;
+    return players[sound.id]!;
   }
 
   @override
@@ -141,7 +144,6 @@ class _MainSectionState extends State<MainSection> {
                 itemBuilder: (BuildContext context, int index) {
                   var sound = soundsToDisplay[index];
                   var tile = SoundTile(
-                      sound: sound,
                       player: getPlayer(sound),
                       onDelete: () => deleteSound(sound));
                   return tile;
