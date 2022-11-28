@@ -46,13 +46,14 @@ class _MainSectionState extends State<MainSection> {
       setState(() {
         timer.cancel();
       });
-      return;
+      return -1;
     }
     if (mounted) {
       setState(() {
-        height--;
+        height = height - 1;
       });
     }
+    return height;
   }
 
   updateState() {
