@@ -210,11 +210,6 @@ class _SoundTileState extends State<SoundTile> {
                 ),
               ),
             ),
-            Positioned(
-              top: 15,
-              left: 15,
-              child: Text('${player.height}'),
-            ),
           ],
         ),
       );
