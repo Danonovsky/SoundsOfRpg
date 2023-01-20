@@ -48,9 +48,9 @@ class MyPlayer {
                   sound.minTime.toInt();
           var period = Duration(milliseconds: (timeToWait * 10).toInt());
           Timer.periodic(period, (timer) {
-            int _h = updateTimer(timer, height);
-            if (_h == -1) return;
-            height = _h;
+            int h = updateTimer(timer, height);
+            if (h == -1) return;
+            height = h;
           });
           await Future.delayed(Duration(seconds: timeToWait));
         }
