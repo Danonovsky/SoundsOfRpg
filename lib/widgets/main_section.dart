@@ -7,9 +7,7 @@ import 'package:sounds_of_rpg/widgets/add_sound_dialog.dart';
 import 'package:sounds_of_rpg/widgets/sound_tile.dart';
 
 class MainSection extends StatefulWidget {
-  const MainSection(
-      {Key? key, required this.sounds, required this.selectedCategory})
-      : super(key: key);
+  const MainSection({Key? key, required this.sounds, required this.selectedCategory}) : super(key: key);
   final List<Sound> sounds;
   final Category? selectedCategory;
 
@@ -60,11 +58,9 @@ class _MainSectionState extends State<MainSection> {
   }
 
   void deleteSound(Sound sound) async {
-    if (_players.entries
-        .any((element) => element.value.state == PlayerState.playing)) {
+    if (_players.entries.any((element) => element.value.state == PlayerState.playing)) {
       ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Can't delete if any sound playing")));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Can't delete if any sound playing")));
       return;
     }
     setState(() {
@@ -109,10 +105,7 @@ class _MainSectionState extends State<MainSection> {
                 ),
                 itemBuilder: (BuildContext context, int index) {
                   var sound = soundsToDisplay[index];
-                  var tile = SoundTile(
-                      sound: sound,
-                      player: getPlayer(sound),
-                      onDelete: () => deleteSound(sound));
+                  var tile = SoundTile(sound: sound, player: getPlayer(sound), onDelete: () => deleteSound(sound));
                   return tile;
                 },
                 itemCount: soundsToDisplay.length,
