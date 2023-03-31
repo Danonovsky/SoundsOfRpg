@@ -25,8 +25,7 @@ class _SoundTileState extends State<SoundTile> {
   final StorageService _storageService = StorageService();
   StreamSubscription? _subscription;
   StreamSubscription? _durationSubscription;
-  late RangeValues _values =
-      RangeValues(widget.sound.minTime, widget.sound.maxTime);
+  late RangeValues _values = RangeValues(widget.sound.minTime, widget.sound.maxTime);
   bool loopMode = false;
   bool isActive = false;
   int _height = 0;
@@ -45,8 +44,7 @@ class _SoundTileState extends State<SoundTile> {
     _subscription?.cancel();
   }
 
-  Future<DeviceFileSource> get source async =>
-      DeviceFileSource(await _storageService.getSoundFilePath(widget.sound));
+  Future<DeviceFileSource> get source async => DeviceFileSource(await _storageService.getSoundFilePath(widget.sound));
 
   ensureSubscribed() {
     _subscription?.cancel();
@@ -58,8 +56,7 @@ class _SoundTileState extends State<SoundTile> {
         isActive = true;
         if (widget.sound.delayMode) {
           _height = 100;
-          var timeToWait = Random().nextInt(
-                  widget.sound.maxTime.toInt() - widget.sound.minTime.toInt()) +
+          var timeToWait = Random().nextInt(widget.sound.maxTime.toInt() - widget.sound.minTime.toInt()) +
               widget.sound.minTime.toInt();
           var period = Duration(milliseconds: (timeToWait * 10).toInt());
           Timer.periodic(period, (timer) {
@@ -125,11 +122,9 @@ class _SoundTileState extends State<SoundTile> {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setModalState) {
+          return StatefulBuilder(builder: (BuildContext context, StateSetter setModalState) {
             return Padding(
-              padding: const EdgeInsets.only(
-                  bottom: 15, top: 15, left: 100, right: 100),
+              padding: const EdgeInsets.only(bottom: 15, top: 15, left: 100, right: 100),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -176,8 +171,7 @@ class _SoundTileState extends State<SoundTile> {
                           min: 0,
                           max: 60,
                           divisions: 60,
-                          labels: RangeLabels(_values.start.toStringAsFixed(0),
-                              _values.end.toStringAsFixed(0)),
+                          labels: RangeLabels(_values.start.toStringAsFixed(0), _values.end.toStringAsFixed(0)),
                           values: _values,
                           onChanged: (values) {
                             setModalState(() {
@@ -235,9 +229,7 @@ class _SoundTileState extends State<SoundTile> {
                   message: isActive ? 'Stop' : 'Play',
                   child: IconButton(
                     onPressed: play,
-                    icon: isActive
-                        ? const Icon(Icons.stop)
-                        : const Icon(Icons.play_arrow),
+                    icon: isActive ? const Icon(Icons.stop) : const Icon(Icons.play_arrow),
                   ),
                 ),
               ),
@@ -267,7 +259,15 @@ class _SoundTileState extends State<SoundTile> {
               child: Tooltip(
                 message: 'Delete',
                 child: IconButton(
-                  onPressed: widget.onDelete,
+                  onPressed: () {
+                    if (isActive) {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(const SnackBar(content: Text("Can't delete if any sound playing")));
+                      return;
+                    }
+                    widget.onDelete();
+                  },
                   icon: const Icon(Icons.delete),
                 ),
               ),
